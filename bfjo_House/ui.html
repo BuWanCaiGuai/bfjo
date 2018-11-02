@@ -1,0 +1,819 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>房屋测量</title>
+    <link rel="stylesheet" href="layui/style/style.css">
+    <link rel="stylesheet" href="layui/css/layui.css" media="all">
+    <script src="jquery/jquery-3.3.1.min.js"></script>
+    <script src="layui/layui.js" charset="utf-8"></script>
+    <!-- 要保证控制台console.js脚本先于ui.js脚本执行，否则捕捉不到错误-->
+    <script src="js/console.js" type="text/javascript" language="javascript"></script>
+    <script src="js/ui.js" type="text/javascript" language="javascript"></script>
+</head>
+
+<body id="body">
+    <!--遮盖层-->
+    <div class="cover_layer" id="cover_div"></div>
+    <div class="cover_layer_light" id="room_origin_cover_layer"></div>
+    <!--设置页面<-->
+    <div id="setting_div" class="layui-anim layui-anim-fadein  my_setting_box "">
+        <div style="background: #D3DCE6;width: 100%;height: 40px;margin:auto;">
+            <label style="font-size:16px;color:#000;margin-left: 10px;margin-bottom:5px;line-height: 40px;">设置</label>
+            <span class="layui-layer-setwin">
+                <a class="layui-layer-ico layui-layer-close layui-layer-close1" href="javascript:hide_message(this);"></a>
+            </span>
+        </div>
+            <div class="layui-tab">
+      <ul class="layui-tab-title">
+        <li class="layui-this">房间设置</li>
+        <li>门设置</li>
+        <li>墙设置</li>
+        <li>颜色设置</li>
+      </ul>
+      <div class="layui-tab-content">
+
+    <div class="layui-tab-item layui-show">
+        <div style="overflow-y: scroll;height: 340px">
+        <table width="350" border="1" cellspacing="0" class="layui-table" id="room_table" style="text-align: center;cursor: pointer;">
+               <thead>
+                      <tr>
+                                <td><b>标签名</b></td>
+                                <td><b>操作</b></td>
+                      </tr>     
+                </thead>    
+                <tbody>
+                </tbody> 
+           </table>
+            <div style="margin-top: 20px" align="center">
+                <button class="layui-btn layui-btn-primary" id="add_room_tag_btn" onclick="show_room_tag_edit()" type="button">
+                 点击添加新标签
+                </button>
+            </div>
+             <div align="center" id="edit_room_tag_div" style="display: none;margin-top: 30px">
+                <input class="layui-input" type="text" id="edit_room_tag_input" style="width: 370px;" placeholder="请输入要增加的房间类型">
+                <div align="right" style="margin-right: 12px;margin-top: 10px">
+                    <button class="layui-btn layui-btn-primary" id="submit_new_room_tag_btn" onclick="submit_new_room_tag()" type="button">确认</button>
+                    <button class="layui-btn layui-btn-primary" id="room_cancel" onclick="hide_edit_room_div()">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="layui-tab-item">
+         <div style="overflow-y: scroll;height: 340px;">
+        <table width="350" border="1" cellspacing="0" class="layui-table" id="door_table" style="text-align: center;cursor: pointer;">
+               <thead>
+                      <tr>
+                                <td><b>标签名</b></td>
+                                <td><b>操作</b></td>
+                      </tr>     
+                </thead>    
+                <tbody>
+                </tbody> 
+           </table>
+
+            <div style="margin-top: 20px" align="center">
+                <button class="layui-btn layui-btn-primary" id="add_door_tag_btn" onclick="show_door_tag_edit()" type="button">
+                    点击添加新标签
+                </button>
+            </div>
+            <div align="center" id="edit_door_tag_div" style="display: none;margin-top: 30px">
+                <input class="layui-input" type="text" id="edit_door_tag_input" style="width: 370px;" placeholder="请输入要增加的门类型">
+                <div align="right" style="margin-right: 12px;margin-top: 10px">
+                    <button class="layui-btn layui-btn-primary" id="submit_new_door_tag_btn" onclick="submit_new_door_tag()" type="button">确认</button>
+                    <button class="layui-btn layui-btn-primary" id="door_cancel" onclick="hide_edit_door_div()">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+ 
+    <div class="layui-tab-item">
+         <div style="padding: 5px;margin-top: 10px" id="wall_thickness_form" style="display: block;" align="center">
+                                <label style="font-size: 16px;float: left;margin-top: 8px">墙的厚度：</label>
+                                <input id="wall_thickness" type="text" value="" style="float: left;" class="wall-input" placeholder="请输入数字"></input>
+                                <label style="font-size: 16px;">mm</label>
+                                <label id="message" style="color: red;display:none;"></label>
+                                <button class="layui-btn layui-btn-primary" id="wall_thickness_OkBtn" onclick="setWallthickness()">应用
+                                </button>
+            </div>
+    </div>
+
+    <div class="layui-tab-item">
+        <!-- <div>
+            <label style="float: left;margin-top: 8px;margin-left: 20px">墙颜色设置</label>
+            <input id=wall_r type="text" class="layui-input" style="width: 40px;float: left;margin-left: 32px" placeholder="R">
+            <input id=wall_g type="text" class="layui-input" style="width: 40px;float: left;" placeholder="G">
+            <input id=wall_b type="text" class="layui-input" style="width: 40px;float: left;" placeholder="B">
+            <button class="layui-btn layui-btn-primary" style="margin-left: 10px" onclick="setwallcolor()">应用</button>
+        </div> -->
+        <div>
+            <label style="float: left;margin-top: 8px;margin-left: 30px">天花板地板颜色设置</label>
+            <input id=plane_r type="text" class="layui-input" style="width: 40px;float: left;margin-left: 10px" placeholder="R">
+            <input id=plane_g type="text" class="layui-input" style="width: 40px;float: left;" placeholder="G">
+            <input id=plane_b type="text" class="layui-input" style="width: 40px;float: left;" placeholder="B">
+            <button class="layui-btn layui-btn-primary" style="margin-left: 10px" onclick="setplanecolor()">应用</button>
+        </div>
+    </div>
+    
+  </div>
+    </div>  
+     </div>
+    <!--设置-->
+    <!--房屋信息添加-->
+    <div id="house_message_div" class="layui-anim layui-anim-fadein  my_message_box " style="display: none;">
+        <div style="background: #D3DCE6;width: 100%;height: 40px;margin:auto; border-top: 2px solid #fff;">
+            <label style="font-size:16px;color:#000;margin-left: 10px;margin-bottom:5px;line-height: 40px;">房屋信息</label>
+            <span class="layui-layer-setwin"><a class="layui-layer-ico layui-layer-close layui-layer-close1" href="javascript:hide_message(this);"></a></span>
+        </div>
+        <form class="layui-form" action="">
+            <div class="layui-form-item">
+                <label class="layui-form-label" style="">小区名称</label>
+                <div class="layui-input-block">
+                    <input class="layui-input" type="text" id="district_name" style="margin-left: -10px;margin-top:20px;width: 130px;height: 30px;">
+                </div>
+            </div>
+            <div class="layui-form-item" style="margin-top:-10px;">
+                <label class="layui-form-label">门栋</label>
+                <div class="layui-input-block">
+                    <input class="layui-input" type="text" id="building" style="margin-left: -10px;margin-top:20px;width: 130px;height: 30px;">
+                </div>
+            </div>
+            <div class="layui-form-item" style="margin-top:-10px;">
+                <label class="layui-form-label">房号</label>
+                <div class="layui-input-block">
+                    <input class="layui-input" type="text" id="room_no" style="margin-left: -10px;margin-top:20px;width: 130px;height: 30px;">
+                </div>
+            </div>
+            <div class="layui-layer-btn layui-layer-btn-r" style="margin-top:-10px;">
+                <a class="confirm-button layui-btn  site-demo-active" class="confirm-button" id="confirm_house_btn" onclick="submit_house_info()">确定</a>
+                <a class="layui-btn cancel-button" id="cancel_house_btn" onclick="hide_message()">取消</a>
+            </div>
+        </form>
+    </div>
+    <!--ysl 2017.9.27-->
+    <!--房间信息添加-->
+    <div id="room_message_div" class=" layui-anim layui-anim-fadein my_message_box" style="display: none;">
+        <div style="background: #D3DCE6;width: 100%;height: 40px;margin:auto; border-top: 2px solid #fff;">
+            <label style="font-size:16px;color:#000;margin-left: 10px;margin-bottom:5px;line-height: 40px;">房间信息</label>
+            <span class="layui-layer-setwin"><a class="layui-layer-ico layui-layer-close layui-layer-close1" href="javascript:hide_message();" ></a></span>
+        </div>
+        <form class="layui-form" action="">
+            <blockquote class="layui-elem-quote" style="font-size: 12px;padding-top: 5px;padding-bottom: 5px; margin-top: 10px;">提示:点击确认后，通过鼠标左键，选择房间绘制位置（该位置点作为第1面墙的原点）</blockquote>
+            <div class="layui-form-item" style="margin-top: -10px;">
+                <label style="width: 100px;margin-top:-100px;margin-left:15px;line-height: 50px; ">房间名称</label>
+                <div style="width: 160px;margin-top:-40px;margin-left:80px; ">
+                    <select name="functional_area" lay-filter="room_area" id="select_room_type">
+                    </select>
+                </div>
+            </div>
+            <div class="layui-layer-btn layui-layer-btn-r" style="margin-top:15px;">
+                <a class="layui-btn site-demo-active confirm-button disable-confirm-button" id="confirm_room_btn" onclick="submit_room_info()">确定
+        </a>
+                <a class="layui-btn cancel-button" id="cancel_room_btn " onclick="hide_message()">取消</a>
+            </div>
+        </form>
+    </div>
+    <div id="save_message_div" class="layui-anim layui-anim-fadein my_message_box" style="display:none;height:162px;">
+        <div style="background: #D3DCE6;width: 100%;height: 40px;margin:auto; border-top: 2px solid #fff;">
+            <label style="font-size:16px;color:#000;margin-left: 10px;margin-bottom:5px;line-height: 40px;">保存文件类型</label>
+            <span class="layui-layer-setwin"><a class="layui-layer-ico layui-layer-close layui-layer-close1" href="javascript:hide_message();" ></a></span>
+        </div>
+        <form class="layui-form" action="">
+            <div class="layui-form-item" style="margin-top: 10px;">
+                <label style="width: 100px;margin-top:-100px;margin-left:15px;line-height: 50px; ">保存类型</label>
+                <div style="width: 160px;margin-top:-40px;margin-left:80px; ">
+                    <select name="functional_area" lay-filter="file_area" id="select_save_type">
+                        <option value="2">测量文件.mjson</option>
+                        <option value="1">草图大师文件.skp</option>
+                        <option value="0">打扮家方案</option>
+                    </select>
+                </div>
+            </div>
+            <div class="layui-layer-btn layui-layer-btn-r" style="margin-top:15px;">
+                <a class="layui-btn site-demo-active confirm-button" id="confirm_save_btn" onclick="submit_save()">确定
+        </a>
+                <a class="layui-btn cancel-button" id="cancel_save_btn" onclick="hide_message()">取消</a>
+            </div>
+        </form>
+    </div>
+    <!-- <div id="save_message_div" class="layui-anim layui-anim-fadein  my_message_box " style="display: none;height:160px;">
+  <div style="background: #D3DCE6;width: 100%;height: 40px;margin:auto; border-top: 2px solid #fff;">
+  <label style="font-size:16px;color:#000;margin-left: 10px;margin-bottom:5px;line-height: 40px;">保存信息</label>
+  <span class="layui-layer-setwin"><a class="layui-layer-ico layui-layer-close layui-layer-close1" href="javascript:hide_message(this);"></a></span>
+  </div>
+  <form class="layui-form" action="">
+    <div class="layui-form-item" >
+      <label class="layui-form-label" style="">保存文件名</label>
+      <div class="layui-input-block">
+        <input class="layui-input" type="text" id="save_file_name" style="margin-left: -10px;margin-top:20px;width: 130px;height: 30px;"/>
+      </div>
+    </div>
+    <div class="layui-layer-btn layui-layer-btn-r" style="margin-top:0px;">
+      <a class="confirm-button layui-btn  site-demo-active" class="confirm-button" id="confirm_save_btn" onclick="submit_save()">确定</a>
+      <a class="layui-btn cancel-button" id="cancel_house_btn" onclick="hide_message()">取消</a>
+    </div>
+  </form>
+</div> -->
+    <!--ysl 2017.9.27-->
+    <div id="door_message_div" class="layui-anim layui-anim-fadein my_message_box" style="height:162px;">
+        <div style="background: #D3DCE6;width: 100%;height: 40px;margin:auto; border-top: 2px solid #fff;">
+            <label style="font-size:16px;color:#000;margin-left: 10px;margin-bottom:5px;line-height: 40px;">门信息</label>
+            <span class="layui-layer-setwin"><a class="layui-layer-ico layui-layer-close layui-layer-close1" href="javascript:hide_message();" ></a></span>
+        </div>
+        <form class="layui-form" action="">
+            <div class="layui-form-item" style="margin-top: 10px;">
+                <label style="width: 100px;margin-top:-100px;margin-left:15px;line-height: 50px; ">门类型</label>
+                <div style="width: 160px;margin-top:-40px;margin-left:80px; ">
+                    <select name="functional_area" lay-filter="door_area" id="select_door_type">
+                    </select>
+                </div>
+            </div>
+            <div class="layui-layer-btn layui-layer-btn-r" style="margin-top:15px;">
+                <a class="layui-btn site-demo-active confirm-button disable-confirm-button" id="confirm_door_btn" onclick="submit_door_info()" disable='disabled'>确定
+        </a>
+            </div>
+        </form>
+    </div>
+    <div id="cross_cline_tag_div" class="layui-anim layui-anim-fadein  my_message_box " style="height:162px;">
+        <!-- 20180226 -->
+        <div style="background: #D3DCE6;width: 100%;height: 40px;margin:auto; border-top: 2px solid #fff;">
+            <label style="font-size:16px;color:#000;margin-left: 10px;margin-bottom:5px;line-height: 40px;">十字虚线标签</label>
+            <span class="layui-layer-setwin"><a class="layui-layer-ico layui-layer-close layui-layer-close1" href="javascript:hide_message();" ></a></span>
+        </div>
+        <form class="layui-form" action="">
+            <div class="layui-form-item">
+                <label class="layui-form-label" style="">标签</label>
+                <div class="layui-input-block">
+                    <input class="layui-input" type="text" id="cross_cline_tag" style="margin-left: -10px;margin-top:20px;width: 130px;height: 30px;">
+                </div>
+            </div>
+            <div class="layui-layer-btn layui-layer-btn-c" style="margin-top:-10px;">
+                <a class="layui-btn confirm-button" style="margin-left: 154px;" id="confirm_cross_cline_tag" onclick="submit_cross_cline_tag_info()">确定
+    </a>
+            </div>
+        </form>
+    </div>
+    <div id="water_pipe_radius_div" class="layui-anim layui-anim-fadein  my_message_box " style="height:162px;">
+        <!-- 20180226 -->
+        <div style="background: #D3DCE6;width: 100%;height: 40px;margin:auto; border-top: 2px solid #fff;">
+            <label style="font-size:16px;color:#000;margin-left: 10px;margin-bottom:5px;line-height: 40px;">水管直径</label>
+            <span class="layui-layer-setwin"><a class="layui-layer-ico layui-layer-close layui-layer-close1" href="javascript:hide_message();" ></a></span>
+        </div>
+        <form class="layui-form" action="">
+            <div class="layui-form-item">
+                <label class="layui-form-label" style="">水管直径（.mm）</label>
+                <div class="layui-input-block">
+                    <input class="layui-input" type="text" id="water_pipe_radius" style="margin-left: -10px;margin-top:20px;width: 130px;height: 30px;">
+                </div>
+            </div>
+            <div class="layui-layer-btn layui-layer-btn-c" style="margin-top:-10px;">
+                <a class="layui-btn confirm-button" style="margin-left: 154px;" id="confirm_water_pipe_radius" onclick="submit_water_pipe_info()">确定
+    </a>
+            </div>
+        </form>
+    </div>
+    <div id="electricity_num_div" class="layui-anim layui-anim-fadein  my_message_box " style="height:162px;">
+        <!-- 20180226 -->
+        <div style="background: #D3DCE6;width: 100%;height: 40px;margin:auto; border-top: 2px solid #fff;">
+            <label style="font-size:16px;color:#000;margin-left: 10px;margin-bottom:5px;line-height: 40px;">插座开关数目</label>
+            <span class="layui-layer-setwin"><a class="layui-layer-ico layui-layer-close layui-layer-close1" href="javascript:hide_message();" ></a></span>
+        </div>
+        <form class="layui-form" action="">
+            <div class="layui-form-item">
+                <label class="layui-form-label" style="">插座开关数目（横向从左向右）</label>
+                <div class="layui-input-block">
+                    <input class="layui-input" type="text" id="electricity_num" style="margin-left: -10px;margin-top:20px;width: 130px;height: 30px;">
+                </div>
+            </div>
+            <div class="layui-layer-btn layui-layer-btn-c" style="margin-top:-10px;">
+                <a class="layui-btn confirm-button" style="margin-left: 154px;" id="confirm_electricity_num" onclick="submit_electricity_num()">确定
+    </a>
+            </div>
+        </form>
+    </div>
+    <div class="layui-tab layui-tab-card" id="measure_house_tab">
+        <ul class="layui-tab-title">
+            <li class="layui-this" id="measure_house" style="float: left;">测房</li>
+            <li style="display: none;float: left;" id="setting">显示</li>
+            <li>关于</li>
+            <button class="layui-btn layui-btn-sm layui-btn-primary" style="float: right;background: none;border: none;" id="setting_btn" onclick="setting()">
+                <i class="layui-icon">&#xe620;</i>
+            </button>
+            <!--    <el-button icon="el-icon-setting" circle style="float: right;" id="setting_btn" onclick="setting()"></el-button> -->
+        </ul>
+        <div class="layui-tab-content">
+            <!--测房选项卡-->
+            <div class="layui-tab-item layui-show">
+                <div class="house-meter-tab" id="house_meter_tab">
+                    <div style="width: 100%;">
+                        <!--一级toolbar-->
+                        <div class="first-plane" id="first_level_toolbar">
+                            <button class="toolbar-button pop-button" style="background:url('images/management.png') #fff no-repeat center " title="创建房屋" id="create_house_btn">
+                            </button>
+                            <!-- 
+        <button class="toolbar-button  pop-button" style="background:url('images/save.png') #fff no-repeat center;" title="保存" id="save_btn">
+        </button> -->
+                            <button class="toolbar-button pop-button" style="background:url('images/save.png') #fff no-repeat center;" title="保存" id="save_btn">
+                            </button>
+                            <button class="toolbar-button hidden-button" style="background:url('images/import_file.png') #fff no-repeat center;" title="导入测量文件" id="import_data_btn">
+                            </button>
+                            <button class="toolbar-button" style="background:url('images/clear_model.png') #fff no-repeat center;" title="清除测量房屋" id="clear_model_btn">
+                            </button>
+                            <button class="toolbar-button hidden-button pop-button" style="background:url('images/room.png') #fff no-repeat center;" title="增加房间" id="add_room_btn" >
+                            </button>
+                            <span class="egmenting-line" id="egmenting_line"></span>
+                            <!--   <button class="toolbar-button hidden-button" style="background:url('images/transparent.png') #fff no-repeat center;" title="透明" id="transparent_btn">
+        </button> -->
+                            <!--  <button class="toolbar-button hidden-button" style="background:url('images/room_combine.png') #fff no-repeat center;" title="房间拼接" id="combine_room_btn">
+        </button>  -->
+                            <div class="request-select-point-info" id="set_origin_info">
+                                请在草图大师绘图区域通过左键选择房间绘制原点
+                            </div>
+                            <button class="toolbar-button hidden-button" style="background:url('images/start.png') #fff no-repeat center;" title="开始测量" id="start_measure_btn">
+                            </button>
+                            <button class="toolbar-button hidden-button" style="background:url('images/pause.png') #fff no-repeat center;" title="暂停" id="pause_btn">
+                            </button>
+                            <button class="toolbar-button hidden-button" style="background:url('images/reconnect.png') #fff no-repeat center;" title="重新连接测量仪" id="reconnect_btn">
+                                <!-- 20180808xuyang -->
+                            </button>
+                            <button class="toolbar-button hidden-button" style="background:url('images/undo.png') #fff no-repeat center;" title="回退" id="undo_btn">
+                            </button>
+                            <button class="toolbar-button hidden-button" style="background:url('images/stop.png') no-repeat center  #fff;" title="结束测量" id="end_measure_btn">
+                            </button>
+                            <button class="toolbar-button hidden-button" title="设置地面/天花测量方式" style="background:url('images/plane_measure.png') no-repeat center #fff;;" id="plane_option_btn">
+                            </button>
+                            <button class="toolbar-button hidden-button" style="background:url('images/wall.png') no-repeat center #fff;" title="测量墙面" id="measure_wall_btn">
+                            </button>
+                            <!--   <button class="ui-button-first layui-btn ui-widget ui-corner-all" style="background:url('images/wall_width.png') no-repeat center #fff" title="设置墙厚度"
+            id="set_wallthickness_btn">
+          </button> -->
+                            <button class="toolbar-button hidden-button" style="background:url('images/window.png') no-repeat center #fff;" title="测量窗" id="measure_window_btn">
+                            </button>
+                            <button class="toolbar-button hidden-button" style="background:url('images/door.png') no-repeat center #fff;" title="测量门" id="measure_door_btn">
+                            </button>
+                            <button class="toolbar-button hidden-button " style="background:url('images/girder.png') no-repeat center #fff;" title="测量梁" id="measure_girder_btn">
+                            </button>
+                            <button class="toolbar-button hidden-button" style="background:url('images/column.png') no-repeat center #fff;" title="测量柱" id="measure_column_btn">
+                            </button>
+                            <button class="toolbar-button hidden-button" style="background:url('images/electric.png') no-repeat center #fff;" title="测量水电" id="measure_electricity_btn">
+                            </button>
+                            <button class="toolbar-button hidden-button" style="background:url('images/skirtingline.png') no-repeat center #fff;" title="测量踢脚线" id="measure_skirtingline_btn">
+                            </button>
+                            <!--20180225-->
+                            <button class="toolbar-button hidden-button" style="background:url('images/ceilingline.png') no-repeat center #fff;" title="测量石膏线" id="measure_ceilingline_btn">
+                            </button>
+                            <button class="toolbar-button hidden-button" style="background:url('images/suspended_ceiling.png') no-repeat center #fff;" title="测量吊顶" id="suspended_ceiling_btn">
+                            </button>
+                            <button class="toolbar-button hidden-button" style="background:url('images/steps.png') no-repeat center #fff;" title="测量台阶" id="measure_steps_btn">
+                            </button>
+                            <!--    <button class="toolbar-button hidden-button" style="background:url('images/combine_room.png') no-repeat center #fff;" title="合并房间"
+            id="combine_room_btn">
+          </button> -->
+                            <!-- <button class="ui-button-first layui-btn ui-widget ui-corner-all" style="background:url('images/tripoint_pipe.png') no-repeat center #fff;display: none;margin-left:2px;" title="测量三点水管"
+            id="measure_tripoint_pipe_btn">
+          </button> -->
+                            <!--20180225-->
+                            <!-- <button class="toolbar-button" style="background:url('images/water_pipe.png') no-repeat center #fff;" title="测量水管"
+            id="measure_water_pipe_btn">
+          </button> -->
+                            <!--20180225-->
+                            <!--       <button class="ui-button-first layui-btn ui-widget ui-corner-all" style="background:url('images/roomDimension.png') no-repeat center #fff;" title="标注房屋尺寸"
+          id="dimension_btn">
+        </button>
+
+        <button class="ui-button-first layui-btn ui-widget ui-corner-all" style="background:url('images/eye.png') #fff no-repeat center " title="聚焦墙" 
+         id="focus_wallFace_btn">
+        </button> -->
+                        </div>
+                        <!--设置平面测量方式二级toolbar-->
+                        <div class="secondary-plane" id="plane_toolbar">
+                            <button class="toolbar-button button-clicked" id="plane_onePoint" style="background:url('images/secondary/ceiling/plane_onePoint.png') no-repeat center #fff" title="地面一点，天花板一点">
+                            </button>
+                            <button class="toolbar-button" id="plane_threePoints" title="地面三点，天花板三点" style="background:url('images/secondary/ceiling/plane_threePoints.png') no-repeat center #fff;">
+                            </button>
+                        </div>
+                        <!--设置门测量方式二级toolbar-->
+                        <div class="secondary-plane" id="door_toolbar">
+                            <button class="toolbar-button button-clicked" id="door_twoPoints_1" title="顶一点，对边一点" style="background:url('images/secondary/door/door_twoPoints_1.png') no-repeat center #fff;">
+                            </button>
+                            <button class="toolbar-button " id="door_twoPoints_0" title="对角两点" style="background:url('images/secondary/door/door_twoPoints_0.png') no-repeat center #fff;">
+                            </button>
+                            <button class="toolbar-button" id="door_eightPoints" title="测边八点" style="background:url('images/secondary/door/door_eightPoints.png') no-repeat center #fff;">
+                            </button>
+                        </div>
+                        <!--设置门测量方式二级toolbar-->
+                        <div class="secondary-plane" id="steps_toolbar">
+                            <button class="toolbar-button button-clicked" id="steps" title="附属墙一点，外两顶点" style="background:url('images/secondary/steps/steps.png') no-repeat center #fff;">
+                            </button>
+                        </div>
+                        <!--设置窗户测量方式二级toolbar-->
+                        <div class="secondary-plane" id="window_toolbar">
+                            <button class="toolbar-button button-clicked" id="window_twoPoints" style="background:url('images/secondary/window/window_twoPoints.png') no-repeat center #fff;" title="对角两点">
+                            </button>
+                            <button class="toolbar-button" id="window_eightPoints" title="测边八点" style="background:url('images/secondary/window/window_eightPoints.png') no-repeat center #fff;"></button>
+                            <button class="toolbar-button" id="normal_bay_window" title="一字型飘窗" style="background:url('images/secondary/window/normal_bay_window.png') no-repeat center #fff;"></button>
+                            <button class="toolbar-button" id="LType_bay_window" title="转角飘窗" style="background:url('images/secondary/window/LType_bay_window.png') no-repeat center #fff;"></button>
+                        </div>
+                        <!--设置水管测量方式二级toolbar    20180226-->
+                        <!-- <div class="secondary-plane" id="water_pipe_toolbar">
+        <button class="ui-button-secondary layui-btn ui-widget ui-corner-all" 
+         id="water_pipe_floor" title="地面水管" style="background:url('images/secondary/water_pipe/water_pipe_floor.png') no-repeat center #fff;"></button>
+        <button class="ui-button-secondary layui-btn ui-widget ui-corner-all" 
+         id="water_pipe_wall" title="墙面水管" style="background:url('images/secondary/water_pipe/water_pipe_wall.png') no-repeat center #fff;"></button>
+      </div> -->
+                        <!--墙的二级面板-->
+                        <div class="secondary-plane" id="wall-plane">
+                            <div class="" style="display: block;">
+                                <button class="toolbar-button button-clicked" id="wall_twoPoints" style="background:url('images/secondary/wall/two_point_wall.png') no-repeat center #fff;" title="墙身两点"></button>
+                                <span class="egmenting-line"></span>
+                                <button class="toolbar-button" style="background:url('images/secondary/wall/wall_close.png') no-repeat center #fff;" title="延长封闭" id="extend_wall_btn"> </button>
+                                <button class="toolbar-button" style="background:url('images/secondary/wall/direct_enclose_wall.png') no-repeat center #fff;" title="直接封闭" id="direct_enclose_wall_btn"> </button>
+                            </div>
+                            <div style="width: 100%;height: 5px;background: #fff;">
+                            </div>
+                           <!--  <div style="padding: 5px;" id="wall_thickness_form" style="display: block;">
+                                <label style="font-size: 16px;">墙的厚度：</label>
+                                <input id="wall_thickness" type="text" value="" class="wall-input" placeholder="请输入数字"></input>
+                                <label style="font-size: 16px;">mm</label>
+                                <label id="message" style="color: red;display:none;"></label>
+                                <button class="apply-button" id="wall_thickness_OkBtn" onclick="setWallthickness()">应用
+                                </button>
+                            </div> -->
+                        </div>
+                    </div>
+                    <!--    <div class="ui-form secondary-plane" id="wall_thickness_resetForm"> 
+          <label>请输入墙的厚度：</label>
+          <input id="wall_thickness_resetInput"  type="text" value="" style="height:18px;width: 70px;"></input>
+          <label>mm</label>
+        <label id="message" style="color: red;display:none;"></label>
+        <button class=" layui-btn ui-widget ui-corner-all" style="font-size: 80%;font-family: 微软雅黑 宋体;margin-left: 20px;"
+          id="wall_thickness_resetBtn">应用</button>
+      </div> -->
+                    <!-- xuyang170829 柱的测量-->
+                    <div class="secondary-plane" id="column_toolbar">
+                        <button class="toolbar-button button-clicked" id="corner_column" title="测角柱" style="background:url('images/secondary/column/corner_column.png') no-repeat center #fff;"></button>
+                        <button class="toolbar-button" id="midWall_column" title="测墙中柱" style="background:url('images/secondary/column/midWall_column.png') no-repeat center #fff;"></button>
+                        <button class="toolbar-button" id="midRoom_column" title="测房中柱" style="background:url('images/secondary/column/midRoom_column.png') no-repeat center #fff;"></button>
+                    </div>
+                    <!-- ysl20171018 梁的测量方式-->
+                    <div class="secondary-plane" id="girder_toolbar">
+                        <button class="toolbar-button button-clicked" id="corner_girder" title="测角梁" style="background:url('images/secondary/girder/corner_girder.png') no-repeat center #fff ;"></button>
+                        <button class="toolbar-button" id="midRoom_girder" title="测房中梁" style="background:url('images/secondary/girder/midRoom_girder.png') no-repeat center #fff;"></button>
+                    </div>
+                    <!-- ysl20171018 水电的测量对象-->
+                    <div class="secondary-plane" id="electricity_toolbar">
+                        <button class="toolbar-button button-clicked" id="socket" title="插座" style="background:url('images/secondary/electricity/socket.png') no-repeat center #fff ;"></button>
+                        <button class="toolbar-button" id="switch" title="开关" style="background:url('images/secondary/electricity/switch.png') no-repeat center #fff;"></button>
+                        <button class="toolbar-button" id="gas_on_wall" title="墙上燃气" style="background:url('images/secondary/electricity/gas_on_wall.png') no-repeat center #fff;"></button>
+                        <button class="toolbar-button" id="gas_on_ground" title="地上燃气" style="background:url('images/secondary/electricity/gas_on_ground.png') no-repeat center #fff;"></button>
+                        <button class="toolbar-button" id="drain" title="排水" style="background:url('images/secondary/electricity/drain.png') no-repeat center #fff;"></button>
+                        <button class="toolbar-button" id="water_intake_wall" title="墙上进水" style="background:url('images/secondary/electricity/water_intake_wall.png') no-repeat center #fff;"></button>
+                        <button class="toolbar-button" id="water_intake_ground" title="地上进水" style="background:url('images/secondary/electricity/water_intake_ground.png') no-repeat center #fff;"></button>
+                        <button class="toolbar-button" id="faucet" title="水龙头" style="background:url('images/secondary/electricity/faucet.png') no-repeat center #fff;"></button>
+                        <button class="toolbar-button" id="exhaust" title="排气" style="background:url('images/secondary/electricity/exhaust.png') no-repeat center #fff;"></button>
+                        <button class="toolbar-button" id="electricBox" title="电箱" style="background:url('images/secondary/electricity/electricBox.png') no-repeat center #fff;"></button>
+                        <button class="toolbar-button" id="air_conditioning" title="空调" style="background:url('images/secondary/electricity/air_conditioning.png') no-repeat center #fff;"></button>
+                        <button class="toolbar-button" id="outlet_on_wall" title="墙出风口" style="background:url('images/secondary/electricity/outlet_wall.png') no-repeat center #fff;"></button>
+                        <button class="toolbar-button" id="outlet_on_ceiling" title="天花出风口" style="background:url('images/secondary/electricity/outlet_ceiling.png') no-repeat center #fff;"></button>
+                        <button class="toolbar-button" style="background:url('images/secondary/electricity/tripoint_pipe.png') no-repeat center #fff;" title="三点水管" id="tripoint_pipe">
+                            <!--20180301 -->
+                        </button>
+                        <button class="toolbar-button" style="background:url('images/secondary/electricity/cross_cline.png') no-repeat center #fff;" title="十字虚线" id="cross_cline">
+                            <!--20180301 -->
+                        </button>
+                    </div>
+                    <!--显示/隐藏尺寸二级toolbar-->
+                    <div id="dimension_focusedWall_toolbar" style="display: none">
+                        <div class="secondary-plane" style="display: block">
+                            <!--  <button class="ui-button-secondary layui-btn ui-widget ui-corner-all button-clicked" 
+        id="dimension_focusedWall_btn" title="标注墙面尺寸"  style="background:url('images/secondary/focus/focusDimension.png') no-repeat center #fff;">
+          </button> -->
+                        </div>
+                        <fieldset class="layui-elem-field layui-field-title" style="margin-top: 10px;">
+                            <legend>墙属性</legend>
+                        </fieldset>
+                        <div class="layui-collapse">
+                            <div class="layui-colla-item">
+                                <h2 class="layui-colla-title">墙</h2>
+                                <div class="layui-colla-content">
+                                    <div class="layui-form-item">
+                                        <table class="layui-table" lay-size="sm" id="wall_table">
+                                            <thead>
+                                                <tr>
+                                                    <th></th>
+                                                    <th>墙厚</th>
+                                                    <th>底宽</th>
+                                                    <th>顶宽</th>
+                                                    <th>左侧高</th>
+                                                    <th>右侧高</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td colspan=6 style="text-align:center;">无数据</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="layui-colla-item">
+                                <h2 class="layui-colla-title">门</h2>
+                                <div class="layui-colla-content">
+                                    <div class="layui-form-item">
+                                        <table class="layui-table" lay-size="sm" id="door_table">
+                                            <thead>
+                                                <tr>
+                                                    <th></th>
+                                                    <th>高</th>
+                                                    <th>宽</th>
+                                                    <th>离顶距离</th>
+                                                    <th>离底距离</th>
+                                                    <th>离左侧距离</th>
+                                                    <th>离右侧距离</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td colspan=7 style="text-align:center;">无数据</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="layui-colla-item">
+                                <h2 class="layui-colla-title">窗</h2>
+                                <div class="layui-colla-content">
+                                    <div class="layui-form-item">
+                                        <table class="layui-table" lay-size="sm" id="window_table">
+                                            <thead>
+                                                <tr>
+                                                    <th></th>
+                                                    <th>高</th>
+                                                    <th>宽</th>
+                                                    <th>离顶距离</th>
+                                                    <th>离底距离</th>
+                                                    <th>离左侧距离</th>
+                                                    <th>离右侧距离</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td colspan=7 style="text-align:center;">无数据</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="layui-colla-item">
+                                <h2 class="layui-colla-title">梁柱</h2>
+                                <div class="layui-colla-content">
+                                    <div class="layui-form-item">
+                                        <table class="layui-table" lay-size="sm" id="column_girder_table">
+                                            <thead>
+                                                <tr>
+                                                    <th></th>
+                                                    <th>类型</th>
+                                                    <th>长</th>
+                                                    <th>宽</th>
+                                                    <th>高</th>
+                                                    <th>离左墙距离</th>
+                                                    <th>离右墙距离</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td colspan=7 style="text-align:center;">无数据</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="margin-top:-5px; height: 100px;display:none;" id="house_info_div">
+                        <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+                            <legend id="house_info"></legend>
+                        </fieldset>
+                        <div class="layui-tab layui-tab-brief" id="room_tabs" lay-filter="room_tabs" style="display: block;margin-top:-10px;">
+                            <ul class="layui-tab-title">
+                                <li class="layui-this" lay-id="default_tab">请添加待测房间</li>
+                            </ul>
+                            <div class="layui-tab-content">
+                                <div class="layui-tab-item layui-show">
+                                    <form class="layui-form layui-form-pane" action="">
+                                        <div class="layui-form-item">
+                                            <label class="layui-form-label" style="height: 30px;font-size: 12px;width: 80px;">房高</label>
+                                            <div class="layui-input-inline">
+                                                <input id="room_height_input" lay-verify="required" placeholder="未测量" autocomplete="off" class="layui-input" disabled="disabled" type="text" style="height: 30px;font-size: 12px;">
+                                            </div>
+                                        </div>
+                                        <div class="layui-form-item">
+                                            <label class="layui-form-label" style="height: 30px;font-size: 12px;width: 80px;">房间面积</label>
+                                            <div class="layui-input-inline">
+                                                <input id="room_area" lay-verify="required" placeholder="未测量" autocomplete="off" class="layui-input" disabled="disabled" type="text" style="height: 30px;font-size: 12px;">
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="margin-top:15px;">
+                        <fieldset id="record_field" class="layui-elem-field layui-field-title" style="margin-top: 50px;">
+                            <legend id="record_label">测绘记录</legend>
+                        </fieldset>
+                        <label style="margin-left:5px;font-size: 12px;font-family:微软雅黑,宋体; ">当前工作:</label>
+                        <label id="current_work" value="暂无" style="width: 34%;font-family:
+        微软雅黑,宋体; color: red;font-size: 12px;">暂无</label>
+                    </div>
+                    <div class="pointsArea" id="points_record">
+                    </div>
+                </div>
+                <!--控制台-->
+                <div class="console-area" id="console_area">
+                    <div class="layui-tab layui-tab-brief" lay-filter="console">
+                        <ul class="layui-tab-title">
+                            <li class="layui-this" id="user_message_tab" lay-id="user_message_tab">user message</li>
+                            <li class="" id="error_tab" lay-id="error_tab">error</li>
+                        </ul>
+                        <div class="layui-tab-content">
+                            <div class="layui-tab-item user-message-area layui-show" id="user_message_area">
+                                <button class="console-clear-button" title="Clear console" onclick="clear_user_message()"><i class="layui-icon">&#x1006;</i></button>
+                            </div>
+                            <div class="layui-tab-item console-error" id="console_error_area">
+                                <button class="console-clear-button" title="Clear console" onclick="clear_console_error()"><i class="layui-icon">&#x1006;</i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-tab-item">
+                <div id="tabs-adjust">
+                    <div class="first-plane">
+                        <button class="toolbar-button" style="background:url('images/transparent.png') #fff no-repeat center;" title="透明" id="transparent_btn">
+                        </button>
+                        <button class="toolbar-button hidden-button" style="background:url('images/room_combine.png') #fff no-repeat center;" title="房间拼接" id="combine_room_btn">
+                        </button>
+                        <button class="toolbar-button" style="background:url('images/dimension.png') #fff no-repeat center;" title="标注尺寸" id="set_dimensions_btn">
+                        </button>
+                        <button class="toolbar-button" style="background:url('images/dimension_hidden.png') #fff no-repeat center;" title="隐藏尺寸" id="hide_dimensions_btn">
+                        </button>
+                        <button class="toolbar-button" style="background:url('images/label_hidden.png') #fff no-repeat center;" title="隐藏标签" id="set_label_visibility_btn">
+                        </button>
+                        <button class="toolbar-button" style="background:url('images/electric_hidden.png') #fff no-repeat center;" title="隐藏电器" id="set_electric_visibility_btn">
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <!--关于选项卡-->
+            <div class="layui-tab-item">
+                <!--关于-->
+                <div id="tabs-about">
+                    <div style="height: 800px">
+                        <div>
+                            <table class="layui-table" lay-skin="nob" lay-size='sm' style="width：200px;">
+                                <thead>
+                                    <tr>
+                                        <td colspan="5" style="text-align: center;background-color: #E0EEEE;">房屋测量 version 7.1.0.20181001</td>
+                                    </tr>
+                                </thead>
+                                <tr>
+                                    <td colspan="4" border="0" id="serialsTd" onmousemove="show_serials(this)">
+                                        适用于测量仪：<span id="serials"></span>
+                                    </td>
+                                    <td align="right" border="0">
+                                        <a href="#" style="border-bottom: 1px solid blue;color:blue;" onclick="add_license()">添加license</a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div style="margin-top: 30px;">
+                            <fieldset class="layui-elem-field layui-field-title" style="margin-top: 10px;">
+                                <legend>功能描述</legend>
+                            </fieldset>
+                            <table class="layui-table" lay-skin="" lay-size='sm'>
+                                <colgroup>
+                                    <col width="80">
+                                    <col width="100">
+                                </colgroup>
+                                <thead>
+                                    <tr>
+                                        <th>编号</th>
+                                        <th>功能</th>
+                                        <th>描述</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>增加房屋</td>
+                                        <td>设置房屋信息，包括小区名称、门栋、房间号</td>
+                                    </tr>
+                                    <tr>
+                                        <td>2</td>
+                                        <td>保存</td>
+                                        <td>skp文件本地保存；保存打扮家json；保存测量文件mjson</td>
+                                    </tr>
+                                    <tr>
+                                        <td>3</td>
+                                        <td>导入</td>
+                                        <td>导入测量文件mjson</td>
+                                    </tr>
+                                    <tr>
+                                        <td>4</td>
+                                        <td>清空房屋</td>
+                                        <td>清空当前所有测量的房屋</td>
+                                    </tr>
+                                    <tr>
+                                        <td>5</td>
+                                        <td>增加房间</td>
+                                        <td>设置房间类型以及房间绘制原点</td>
+                                    </tr>
+                                    <tr>
+                                        <td>6</td>
+                                        <td>基本功能</td>
+                                        <td>开始测量、暂停、继续、回退、结束</td>
+                                    </tr>
+                                    <tr>
+                                        <td>7</td>
+                                        <td>天花板地板设置</td>
+                                        <td>测量房高，包括天花板、地板各一点和天花板、地板各三点两种测量方式</td>
+                                    </tr>
+                                    <tr>
+                                        <td>8</td>
+                                        <td>墙面测量</td>
+                                        <td>两面两点测量方式及墙体延长封闭、直接封闭</td>
+                                    </tr>
+                                    <tr>
+                                        <td>9</td>
+                                        <td>窗测量</td>
+                                        <td>包括对角两点测量、侧边八点测量、转角飘窗和一字型飘窗测量</td>
+                                    </tr>
+                                    <tr>
+                                        <td>10</td>
+                                        <td>门测量</td>
+                                        <td>包括对角两点测量、顶一点对边一点测量和侧边八点测量三种测量方式</td>
+                                    </tr>
+                                    <tr>
+                                        <td>11</td>
+                                        <td>梁测量</td>
+                                        <td>包括角梁、房中梁两种测量对象</td>
+                                    </tr>
+                                    <tr>
+                                        <td>12</td>
+                                        <td>柱测量</td>
+                                        <td>包括角柱、房中柱、墙中柱三种测量对象</td>
+                                    </tr>
+                                    <tr>
+                                        <td>13</td>
+                                        <td>踢脚线测量</td>
+                                        <td>包括踢脚线测量对象</td>
+                                    </tr>
+                                    <tr>
+                                        <td>14</td>
+                                        <td>水电测量</td>
+                                        <td>包括插座、开关、墙上燃气、地上燃气、排水、墙上进水、地上进水、水龙头、排气、电箱、空调、墙出风口、天花出风口、三点圆水管等14种测量对象</td>
+                                    </tr>
+                                    <tr>
+                                        <td>15</td>
+                                        <td>拼房</td>
+                                        <td>以门为基准，拼接两个房间</td>
+                                    </tr>
+                                    <tr>
+                                        <td>16</td>
+                                        <td>尺寸标注</td>
+                                        <td>标注/隐藏窗和门的尺寸，修改门尺寸</td>
+                                    </tr>
+                                    <tr>
+                                        <td>17</td>
+                                        <td>显示</td>
+                                        <td>包括房间透明/不透明的显示、测量对象标签的显示/隐藏、电器的显示/隐藏</td>
+                                    </tr>
+                                    <!--    <tr>
+                  <td>12</td>
+                  <td>标注尺寸</td>
+                  <td>房间尺寸标注</td>
+                </tr>
+                 <tr>
+                  <td>13</td>
+                  <td>聚焦墙面</td>
+                  <td>聚焦墙面，并显示相关附着物和尺寸</td>
+                </tr> -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

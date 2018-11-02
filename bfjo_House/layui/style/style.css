@@ -1,0 +1,302 @@
+#ktz{
+background-color:#CCCCCC;
+width:300px;
+height:300px;
+position:absolute;
+}
+.layui-layer-title{
+	background-color:#409eff !important;
+	-webkit-transition: all .3s !important;
+	color:#fff !important; 
+}
+.warn .layui-layer-title{
+	background-color:#FF5722 !important; 
+	color:#fff !important; 
+	border: none !important;
+}
+.wall-input{
+	height: 38px;
+	border: 1px solid #e6e6e6;
+	background-color: #fff;
+	border-radius: 2px;
+	padding-left: 10px;
+	box-sizing:border-box;
+	transition:border-color .3s cubic-bezier(.65,.05,.35,.5);
+	outline:0;
+	display:block;
+}
+/*应用按钮*/
+.apply-button{
+	font-size: 16px;
+	font-family: 微软雅黑;
+	margin-left: 20px;
+	background-color: #428bca;  
+    border-color: #357ebd;  
+    color: #fff;  
+    -moz-border-radius: 10px;  
+    -webkit-border-radius: 10px;  
+    border-radius: 3px; /* future proofing */  
+    -khtml-border-radius: 10px; /* for old Konqueror browsers */  
+    text-align: center;  
+    vertical-align: middle;  
+    border: 1px solid transparent;  
+    font-weight: 900;  
+    font-size:125%;
+    width: 60px;  
+    height: 30px;
+    line-height: 18px;
+    margin-bottom: 2px;
+    cursor: pointer;
+}
+/*确定按钮*/
+.confirm-button{
+	border-color: #1E9FFF !important;
+	background-color: #1E9FFF !important;
+	color: #fff !important;
+}
+/*不可用的确定按钮*/
+.disable-confirm-button{
+	border-color: #D4D4D4 !important;
+	background-color: #708090 !important;
+	color: #fff !important;
+	cursor:auto !important;
+}
+/*取消按钮*/
+.cancel-button{
+	color: #000 !important;
+} 
+/*工具栏按钮*/
+.toolbar-button{
+	width: 60px;
+	height: 60px;
+	border: 0;
+	cursor: pointer;
+    border-radius: 8px;
+    transition: all .3s ease-in-out;
+    margin-top: 6px;
+    margin-left:6px;
+
+}
+.toolbar-button:hover{
+   transform:scale(1.05);
+}
+.disabled-button{
+	border:5px solid #B0B0B0 !important;
+}
+.disabled-button:hover{
+	 transform:scale(1)  !important;
+}
+/*弹出填写信息按钮*/
+.pop-button{
+
+}
+/*一级面板*/
+.first-plane{
+	width:100%;
+	max-height:100%;
+	height:auto;
+	background:#e9e9e9;
+	border: 1px solid #dddddd;
+
+}
+/*二级面板*/
+.secondary-plane{
+	display: none;
+	margin-top: 5px;
+	width: 100%;
+	height:auto;
+	background:#e9e9e9;
+	border: 1px solid #dddddd;
+}
+.hidden-button{
+	display: none;
+}
+/*测量点记录样式*/
+.pointsArea{
+	overflow-y:auto;
+	margin-top:2px;
+	width: 100%;
+	height:210px;
+	overflow-y:auto;
+	background:#e9e9e9;
+	border: 1px solid #dddddd;
+	border-bottom-right-radius: 3px;
+	border-bottom-left-radius: 3px;
+	border-top-right-radius: 3px;
+	border-top-left-radius: 3px;
+	line-height:20px;
+	font-size:80%;
+}
+/*复选框标签样式*/
+.checkbox_label{
+	margin:2px;
+	margin-right:-2px;
+	display:inline-block;
+	width: 60px;
+	height: 23px;
+	border: 1px solid #c2c2c2;
+	text-align:center;
+	background: #F0F0F0;
+}
+.checkbox_label:hover{
+	border:1px solid red;	
+}
+.checkbox_label_clicked{
+	background: #66CDAA;
+}
+
+/*弹出提示框*/
+ .my_message_box{
+  z-index: 100000;
+  width: 250px;
+  height: 235px;
+  margin-left: -125px; 
+  margin-top: -90px; 
+/* border: 1px solid #000;*/
+  position:absolute; 
+  top: 50%;
+  left: 50%;
+  background: #fff;
+  display: none;
+}
+
+/*弹出设置框*/
+ .my_setting_box{
+  z-index: 100000;
+  width: 420px;
+  height: 450px;
+  margin-left: -155px; 
+  margin-top: -150px; 
+/* border: 1px solid #000;*/
+  position:absolute; 
+  top: 40%;
+  left: 40%;
+  background: #fff;
+  display: none;
+}
+
+ /*遮盖层*/
+.cover_layer{
+	width:100%;
+    height:110%;
+    background-color:#dddddd;
+    position:absolute;
+    top:0;
+    left:0;
+    z-index:5;
+    opacity:0.5;
+    /*背景的透明度:(IE适用)；*/  
+    filter:alpha(opacity =50);  
+    display: none;        
+}
+ /*透明度高的遮盖层*/
+.cover_layer_light{
+	width:100%;
+    height:110%;
+    background-color:#dddddd;
+    position:absolute;
+    top:0;
+    left:0;
+    z-index:5;
+    opacity:0.1;
+    /*背景的透明度:(IE适用)；*/  
+    filter:alpha(opacity =10);  
+    display: none;        
+}
+
+/*分割线*/
+.egmenting-line{
+	width: 1px;
+	height: 30px;
+	background: #5B5B5B;
+	display: inline-block;
+	margin-top: 20px;
+	margin-left: 1px;
+	position: absolute;
+
+}
+.request-select-point-info{
+	width:auto;
+	font-size: 18px; 
+	color: red;
+	display: none;
+	text-align:center;
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+.console-area{
+	position:fixed;
+    bottom:10px;
+    left:6px;
+	right: 6px;
+	height:200px;
+	background:#fff;
+	border: 1px solid #dddddd;
+	border-bottom-right-radius: 3px;
+	border-bottom-left-radius: 3px;
+	border-top-right-radius: 3px;
+	border-top-left-radius: 3px;
+	color: #909399;
+	display: none;
+}
+#console_area .layui-this:after{
+	border-bottom:2px solid #909399 !important;
+}
+#console_area .layui-this{
+	color: #8A8A8A !important;
+}
+#console_area li{
+	color:#B0B0B0;
+}
+.console-error{
+	color:red !important;
+	overflow-y: auto;
+	height: auto;
+	font-size: 12px;
+	line-height: 14px;
+}
+.user-message-area{
+	overflow-y: auto;
+	height: auto;
+	color:#000 !important;
+	font-size: 12px;
+	line-height: 14px;
+}
+.console-clear-button{
+	background:none;
+	border:none; 
+	position:fixed !important; 
+	right:15px; 
+}
+.house-meter-tab{
+	height: auto;
+	width: 100%;
+	overflow-y: hidden;
+	overflow-x: hidden;
+	padding-right: calc(100vw-100%+1rem);
+}
+#serials{
+	display:inline-block;
+	width:300px;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	position:absolute;
+}
+body, html,input{
+	font-family:"微软雅黑,宋体";
+	width：560px;
+}
+.ui-form{
+	font-size: 80%;
+}
+.button-clicked{
+	border:2px solid #20A0FF;
+}
+html{
+	font-family: "微软雅黑,宋体";
+	font-size:20px;
+}
+
+/*.p{cursor:hand;}
+.label{cursor:hand;}*/

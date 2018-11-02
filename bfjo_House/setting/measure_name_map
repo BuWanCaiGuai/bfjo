@@ -1,0 +1,13 @@
+plane,地板天花
+wall,墙面
+door,门
+window,窗
+girder,梁
+column,柱
+skirtingline,踢脚线
+electricity,水电
+tripoint_pipe,三点水管
+water_pipe,水管
+ceilingline,石膏线
+steps,台阶
+suspended_ceiling,吊顶
