@@ -3,6 +3,7 @@ require 'json'
 require 'pathname'
 require 'fileutils'
 require 'Win32api'
+require 'pp'
 
 module BFJO
   module House
@@ -160,30 +161,41 @@ module BFJO
         
         #设置墙的材质
         materials = House.model.materials
-        m00_material=materials.add("m00_material")
-        file = File.open("#{File.dirname(__FILE__)}\/setting\/rgb",'r') 
-        color_array = []
-        while line = file.gets   #标准输入流
-           line.chop!
-           color_array.push(line)
-        end
-        file.close
-        m00_color=[]
-        m00_color[0]=color_array[1].to_i
-        m00_color[1]=color_array[2].to_i
-        m00_color[2]=color_array[3].to_i
-        m00_material.color=m00_color
         if materials["material1"] == nil
           materials.add("material1")
         end
         if materials["material2"] == nil
           materials.add("material2")
         end
+
+        if materials["plane_material"] == nil
+          materials.add("plane_material")
+        end
+        if materials["floor_material"] == nil
+          materials.add("floor_material")
+        end
+        if materials["innerwall_material"] == nil
+          materials.add("innerwall_material")
+        end
+        if materials["outterwall_material"] == nil
+          materials.add("outterwall_material")
+        end
+        if materials["girder_material"] == nil
+          materials.add("girder_material")
+        end
+        if materials["column_material"] == nil
+          materials.add("column_material")
+        end
+        if materials["ceilingline_material"] == nil
+          materials.add("ceilingline_material")
+        end
+        if materials["skirtingline_material"] == nil
+          materials.add("skirtingline_material")
+        end
         self.set_opaque
 
         House.house.set_name(house_attr) #换成数组20180307
         message = "'房屋信息添加成功！'"
-        message =color12
         House.Web.execute_script("showMessage("+"#{message}"+")")
         state = "'[End]房屋信息标注完毕'"
         House.Web.execute_script("show("+"#{state}"+")")
@@ -977,9 +989,34 @@ module BFJO
       House.Web.canClick = 1
       material1 = House.model.materials['material1']
       material1.alpha = 1
-      material1.color = [255,255,255]
+      material1.color = [255,0,0]
       material2 = House.model.materials['material2']
-      material2.color = [255,255,255]
+      material2.color = [0,0,255]
+
+      file = File.open("#{File.dirname(__FILE__)}\/setting\/rgb",'r') 
+      color_array = []
+      while line = file.gets   #标准输入流
+         line.chop!
+         color_array.push(line)
+      end
+      file.close
+
+      plane_material = House.model.materials['plane_material']
+      plane_material.color = color_array[1].to_i,color_array[2].to_i,color_array[3].to_i
+      floor_material = House.model.materials['floor_material']
+      floor_material.color = color_array[5].to_i,color_array[6].to_i,color_array[7].to_i
+      innerwall_material = House.model.materials['innerwall_material']
+      innerwall_material.color = color_array[9].to_i,color_array[10].to_i,color_array[11].to_i
+      outterwall_material = House.model.materials['outterwall_material']
+      outterwall_material.color = color_array[13].to_i,color_array[14].to_i,color_array[15].to_i
+      girder_material = House.model.materials['girder_material']
+      girder_material.color = color_array[17].to_i,color_array[18].to_i,color_array[19].to_i
+      column_material = House.model.materials['column_material']
+      column_material.color = color_array[21].to_i,color_array[22].to_i,color_array[23].to_i
+      ceilingline_material = House.model.materials['ceilingline_material']
+      ceilingline_material.color = color_array[25].to_i,color_array[26].to_i,color_array[27].to_i
+      skirtingline_material = House.model.materials['skirtingline_material']
+      skirtingline_material.color = color_array[29].to_i,color_array[30].to_i,color_array[31].to_i
     end
 
     unless file_loaded?(__FILE__)

@@ -102,20 +102,71 @@
     </div>
 
     <div class="layui-tab-item">
-        <!-- <div>
-            <label style="float: left;margin-top: 8px;margin-left: 20px">墙颜色设置</label>
-            <input id=wall_r type="text" class="layui-input" style="width: 40px;float: left;margin-left: 32px" placeholder="R">
-            <input id=wall_g type="text" class="layui-input" style="width: 40px;float: left;" placeholder="G">
-            <input id=wall_b type="text" class="layui-input" style="width: 40px;float: left;" placeholder="B">
-            <button class="layui-btn layui-btn-primary" style="margin-left: 10px" onclick="setwallcolor()">应用</button>
-        </div> -->
+     
         <div>
-            <label style="float: left;margin-top: 8px;margin-left: 30px">天花板地板颜色设置</label>
-            <input id=plane_r type="text" class="layui-input" style="width: 40px;float: left;margin-left: 10px" placeholder="R">
+            <label style="float: left;margin-top: 8px;margin-left: 20px">天花板颜色设置</label>
+            <input id=plane_r type="text" class="layui-input" style="width: 40px;float: left;margin-left: 17px" placeholder="R">
             <input id=plane_g type="text" class="layui-input" style="width: 40px;float: left;" placeholder="G">
             <input id=plane_b type="text" class="layui-input" style="width: 40px;float: left;" placeholder="B">
             <button class="layui-btn layui-btn-primary" style="margin-left: 10px" onclick="setplanecolor()">应用</button>
         </div>
+
+        <div>
+            <label style="float: left;margin-top: 8px;margin-left: 20px">地板颜色设置</label>
+            <input id=floor_r type="text" class="layui-input" style="width: 40px;float: left;margin-left: 32px" placeholder="R">
+            <input id=floor_g type="text" class="layui-input" style="width: 40px;float: left;" placeholder="G">
+            <input id=floor_b type="text" class="layui-input" style="width: 40px;float: left;" placeholder="B">
+            <button class="layui-btn layui-btn-primary" style="margin-left: 10px" onclick="setfloorcolor()">应用</button>
+        </div>
+
+        <div>
+            <label style="float: left;margin-top: 8px;margin-left: 20px">内墙颜色设置</label>
+            <input id=innerwall_r type="text" class="layui-input" style="width: 40px;float: left;margin-left: 32px" placeholder="R">
+            <input id=innerwall_g type="text" class="layui-input" style="width: 40px;float: left;" placeholder="G">
+            <input id=innerwall_b type="text" class="layui-input" style="width: 40px;float: left;" placeholder="B">
+            <button class="layui-btn layui-btn-primary" style="margin-left: 10px" onclick="setinnerwallcolor()">应用</button>
+        </div>
+
+        <div>
+            <label style="float: left;margin-top: 8px;margin-left: 20px">外墙颜色设置</label>
+            <input id=outterwall_r type="text" class="layui-input" style="width: 40px;float: left;margin-left: 32px" placeholder="R">
+            <input id=outterwall_g type="text" class="layui-input" style="width: 40px;float: left;" placeholder="G">
+            <input id=outterwall_b type="text" class="layui-input" style="width: 40px;float: left;" placeholder="B">
+            <button class="layui-btn layui-btn-primary" style="margin-left: 10px" onclick="setoutterwallcolor()">应用</button>
+        </div>
+        
+        <div>
+            <label style="float: left;margin-top: 8px;margin-left: 20px">梁颜色设置</label>
+            <input id=girder_r type="text" class="layui-input" style="width: 40px;float: left;margin-left: 46px" placeholder="R">
+            <input id=girder_g type="text" class="layui-input" style="width: 40px;float: left;" placeholder="G">
+            <input id=girder_b type="text" class="layui-input" style="width: 40px;float: left;" placeholder="B">
+            <button class="layui-btn layui-btn-primary" style="margin-left: 10px" onclick="setgirdercolor()">应用</button>
+        </div>
+        
+        <div>
+            <label style="float: left;margin-top: 8px;margin-left: 20px">柱颜色设置</label>
+            <input id=column_r type="text" class="layui-input" style="width: 40px;float: left;margin-left: 46px" placeholder="R">
+            <input id=column_g type="text" class="layui-input" style="width: 40px;float: left;" placeholder="G">
+            <input id=column_b type="text" class="layui-input" style="width: 40px;float: left;" placeholder="B">
+            <button class="layui-btn layui-btn-primary" style="margin-left: 10px" onclick="setcolumncolor()">应用</button>
+        </div>
+        
+        <div>
+            <label style="float: left;margin-top: 8px;margin-left: 20px">石膏线颜色设置</label>
+            <input id=ceilingline_r type="text" class="layui-input" style="width: 40px;float: left;margin-left: 18px" placeholder="R">
+            <input id=ceilingline_g type="text" class="layui-input" style="width: 40px;float: left;" placeholder="G">
+            <input id=ceilingline_b type="text" class="layui-input" style="width: 40px;float: left;" placeholder="B">
+            <button class="layui-btn layui-btn-primary" style="margin-left: 10px" onclick="setceilinglinecolor()">应用</button>
+        </div>
+
+        <div>
+            <label style="float: left;margin-top: 8px;margin-left: 20px">踢脚线颜色设置</label>
+            <input id=skirtingline_r type="text" class="layui-input" style="width: 40px;float: left;margin-left: 18px" placeholder="R">
+            <input id=skirtingline_g type="text" class="layui-input" style="width: 40px;float: left;" placeholder="G">
+            <input id=skirtingline_b type="text" class="layui-input" style="width: 40px;float: left;" placeholder="B">
+            <button class="layui-btn layui-btn-primary" style="margin-left: 10px" onclick="setskirtinglinecolor()">应用</button>
+        </div>
+
     </div>
     
   </div>

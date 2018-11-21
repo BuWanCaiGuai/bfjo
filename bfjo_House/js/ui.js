@@ -1314,7 +1314,7 @@ function setwallcolor(){
 
 function setplanecolor(){
 	var plane_color = [
-		"m00_material",
+		"plane",
 		$("#plane_r").val(),
 		$("#plane_g").val(),
 		$("#plane_b").val(),
@@ -1324,6 +1324,104 @@ function setplanecolor(){
 	params[1] = plane_color
 	callback(params)
 	showMessage("天花板地板颜色设置成功！")
+}
+
+function setfloorcolor(){
+	var floor_color = [
+		"floor",
+		$("#floor_r").val(),
+		$("#floor_g").val(),
+		$("#floor_b").val(),
+	]
+	var params = []
+	params[0] = "update_color"
+	params[1] = floor_color
+	callback(params)
+	showMessage("地板颜色设置成功！")
+}
+
+function setinnerwallcolor(){
+	var innerwall_color = [
+		"innerwall",
+		$("#innerwall_r").val(),
+		$("#innerwall_g").val(),
+		$("#innerwall_b").val(),
+	]
+	var params = []
+	params[0] = "update_color"
+	params[1] = innerwall_color
+	callback(params)
+	showMessage("内墙颜色设置成功！")
+}
+
+function setoutterwallcolor(){
+	var outterwall_color = [
+		"outterwall",
+		$("#outterwall_r").val(),
+		$("#outterwall_g").val(),
+		$("#outterwall_b").val(),
+	]
+	var params = []
+	params[0] = "update_color"
+	params[1] = outterwall_color
+	callback(params)
+	showMessage("外墙颜色设置成功！")
+}
+
+function setgirdercolor(){
+	var girder_color = [
+		"girder",
+		$("#girder_r").val(),
+		$("#girder_g").val(),
+		$("#girder_b").val(),
+	]
+	var params = []
+	params[0] = "update_color"
+	params[1] = girder_color
+	callback(params)
+	showMessage("梁颜色设置成功！")
+}
+
+function setcolumncolor(){
+	var column_color = [
+		"column",
+		$("#column_r").val(),
+		$("#column_g").val(),
+		$("#column_b").val(),
+	]
+	var params = []
+	params[0] = "update_color"
+	params[1] = column_color
+	callback(params)
+	showMessage("柱颜色设置成功！")
+}
+
+function setceilinglinecolor(){
+	var ceilingline_color = [
+		"ceilingline",
+		$("#ceilingline_r").val(),
+		$("#ceilingline_g").val(),
+		$("#ceilingline_b").val(),
+	]
+	var params = []
+	params[0] = "update_color"
+	params[1] = ceilingline_color
+	callback(params)
+	showMessage("石膏线颜色设置成功！")
+}
+
+function setskirtinglinecolor(){
+	var skirtingline_color = [
+		"skirtingline",
+		$("#skirtingline_r").val(),
+		$("#skirtingline_g").val(),
+		$("#skirtingline_b").val(),
+	]
+	var params = []
+	params[0] = "update_color"
+	params[1] = skirtingline_color
+	callback(params)
+	showMessage("踢脚线颜色设置成功！")
 }
 
 function add_license() {

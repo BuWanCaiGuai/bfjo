@@ -1,6 +1,6 @@
 module BFJO
   module House
-  	def self.get_measure_count
+    def self.get_measure_count
       file = File.open("#{File.dirname(__FILE__)}\/setting\/measure_count",'r') 
       House.measure_count = {}
       while line = file.gets   #标准输入流
@@ -139,17 +139,68 @@ module BFJO
           end
 
     def self.update_color(rgb_array)
+            color_array = []
+            color_array = self.get_rgb
+            case rgb_array[0]
+            when "plane"
+              puts (rgb_array[0])
+              color_array[1] = rgb_array[1] 
+              color_array[2] = rgb_array[2]
+              color_array[3] = rgb_array[3]
+            when "floor"
+              puts (rgb_array[0])
+              color_array[5] = rgb_array[1] 
+              color_array[6] = rgb_array[2]
+              color_array[7] = rgb_array[3]
+            when "innerwall"
+              puts (rgb_array[0])
+              color_array[9] = rgb_array[1] 
+              color_array[10] = rgb_array[2]
+              color_array[11] = rgb_array[3]
+            when "outterwall"
+              puts (rgb_array[0])
+              color_array[13] = rgb_array[1] 
+              color_array[14] = rgb_array[2]
+              color_array[15] = rgb_array[3]
+            when "girder"
+              puts (rgb_array[0])
+              color_array[17] = rgb_array[1] 
+              color_array[18] = rgb_array[2]
+              color_array[19] = rgb_array[3]
+            when "column"
+              puts (rgb_array[0])
+              color_array[21] = rgb_array[1] 
+              color_array[22] = rgb_array[2]
+              color_array[23] = rgb_array[3]
+            when "ceilingline"
+              puts (rgb_array[0])
+              color_array[25] = rgb_array[1] 
+              color_array[26] = rgb_array[2]
+              color_array[27] = rgb_array[3]
+            when "skirtingline"
+              puts (rgb_array[0])
+              color_array[29] = rgb_array[1] 
+              color_array[30] = rgb_array[2]
+              color_array[31] = rgb_array[3]
+            end
+
             file = File.open("#{File.dirname(__FILE__)}\/setting\/rgb",'w+') 
-            
-            # arr[1]=rgb_array[1]
-            # arr[2]=rgb_array[2]
-            # arr[3]=rgb_array[3]
-            file.puts(rgb_array)
-            # arr=file.readlines
-            # file.puts(arr[1])
+            file.puts(color_array)
             file.close()
           end
-          
+
+    def self.get_rgb()
+      file = File.open("#{File.dirname(__FILE__)}\/setting\/rgb",'r') 
+      color_array = []
+            while line = file.gets   #标准输入流
+               line.chop!
+               color_array.push(line)
+            end
+      return color_array
+
+
+      end   
+
     def self.set_html_tag
       #读配置文件初始化
       room_tag_text_array = []#2018129

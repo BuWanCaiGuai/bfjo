@@ -177,8 +177,10 @@ module BFJO
                 ceiling_outter_points.push(ceiling_face_p1)
 
 
-                wall_material1 = materials["material1"]
-                wall_material2 = materials["material2"]
+                wall_material1 = materials["innerwall_material"]
+                wall_material2 = materials["outterwall_material"]
+                plane_material =materials["plane_material"]
+                floor_material = materials["floor_material"]
 
                 #重新绘制墙面
                 wall_group = []
@@ -275,8 +277,8 @@ module BFJO
                 floor_outter_points.push(floor_face_pn)
                 floor = House.entities.add_face floor_outter_points
                 area = floor.area
-                floor.material = wall_material1
-                floor.back_material = wall_material2
+                floor.material = floor_material
+                floor.back_material = floor_material
                 floor = House.entities.add_group floor  #将天花板face作为group，防止后面绘制时all.connected出错
                 floor_layer.visible = false
 
@@ -288,8 +290,8 @@ module BFJO
 
                 ceiling = House.entities.add_face ceiling_outter_points
                 ceiling.reverse!
-                ceiling.material = wall_material1
-                ceiling.back_material = wall_material2
+                ceiling.material = plane_material
+                ceiling.back_material = plane_material
                 ceiling = House.entities.add_group ceiling
                 ceiling_layer.visible = false
 
@@ -367,6 +369,8 @@ module BFJO
 
                 wall_material1 = materials["material1"]
                 wall_material2 = materials["material2"]
+                plane_material =materials["plane_material"]
+                floor_material = materials["floor_material"]
 
                 #重新绘制墙面
                 wall_group = []
@@ -460,8 +464,8 @@ module BFJO
                 House.model.active_layer = floor_layer
                 floor = House.entities.add_face floor_outter_points
                 area = floor.area
-                floor.material = wall_material1
-                floor.back_material = wall_material2
+                floor.material = floor_material
+                floor.back_material = floor_material
                 floor = House.entities.add_group floor  #将天花板face作为group，防止后面绘制时all.connected出错
                 floor_layer.visible = false
 
@@ -470,8 +474,8 @@ module BFJO
                 House.model.active_layer = ceiling_layer
                 ceiling = House.entities.add_face ceiling_outter_points
                 ceiling.reverse!
-                ceiling.material = wall_material1
-                ceiling.back_material = wall_material2
+                ceiling.material = plane_material
+                ceiling.back_material = plane_material
                 ceiling = House.entities.add_group ceiling
                 ceiling_layer.visible = false
 
@@ -527,26 +531,29 @@ module BFJO
             floor_points.push(cwall.get["inner_points"][0])
             ceiling_points.push(cwall.get["inner_points"][2])
           }
-          m00_material=materials["m00_material"]
           material1 = materials["material1"]
           material2 = materials["material2"]
+          plane_material =materials["plane_material"]
+          floor_material = materials["floor_material"]
           layers.add("#{@id}地板")
           House.model.active_layer = layers["#{@id}地板"]
           floor_face = House.entities.add_face floor_points
           area = floor_face.area
-          floor_face.material = m00_material
-          floor_face.back_material = m00_material
+          floor_face.material = floor_material
+          floor_face.back_material = floor_material
           floor_group = House.entities.add_group floor_face
           House.entity_group.push(floor_group)
+
           ceiling_layer = layers["天花板"]
           if ceiling_layer==nil
             ceiling_layer=layers.add("天花板")
           end
+          
           House.model.active_layer = ceiling_layer
           ceiling_face = House.entities.add_face ceiling_points
           ceiling_face.reverse!
-          ceiling_face.material = m00_material
-          ceiling_face.back_material = m00_material
+          ceiling_face.material = plane_material
+          ceiling_face.back_material = plane_material
           ceiling_group = House.entities.add_group ceiling_face
           House.entity_group.push(ceiling_group)
 

@@ -252,8 +252,8 @@ module BFJO
           point8 = outter_points[2]
 
           #设置墙的材质
-          wall_material1 = materials["material1"]
-          wall_material2 = materials["material2"]
+          wall_material1 = materials["innerwall_material"]
+          wall_material2 = materials["outterwall_material"]
 
           inner_wall = House.entities.add_face point1,point5,point6,point2
           inner_wall.reverse!
@@ -295,13 +295,21 @@ module BFJO
           object.get["mdimension"].create_dim(point1,point2,offset,object.get["id"],"redraw_width",1)
           set_text(text)
           # House.entity_group.push(text)
-        when "BFJO::House::Skirtingline"
+          when "BFJO::House::Skirtingline"
           begin
             House.model.start_operation('踢脚线', true)
             walls = House.room.get["mobjects"]["BFJO::House::Wall"]
-            layer_name = House.room.get["id"] + object.get["id"]
-            layers.add(layer_name)
+            
+            layer_name =object.get["id"]
             layer = layers[layer_name]
+            if layer==nil
+              layer=layers.add(layer_name)
+            end
+
+            #layer_name = House.room.get["id"] + object.get["id"]
+            #layers.add(layer_name)
+            #layer = layers[layer_name]
+
             House.model.active_layer = layer
             woutter_points = []
             winner_points = []
@@ -493,10 +501,13 @@ module BFJO
             bottom_face = House.entities.add_face outter_points
             bottom_face.reverse!
             bottom_face.pushpull object.get["height"]
+            skirtingline_material = materials["material1"]
+            bottom_face.material = skirtingline_material
             group1 = House.entities.add_group bottom_face.all_connected
             bottom_face_2 = House.entities.add_face calculated_inner_points
             bottom_face_2.reverse!
             bottom_face_2.pushpull object.get["height"]
+            bottom_face_2.material = skirtingline_material
             group2 = House.entities.add_group bottom_face_2.all_connected
             skirtingline_group = group2.subtract(group1)
             if door_groups != []
@@ -833,11 +844,18 @@ module BFJO
             if bottom_face.normal.angle_between(base_vec) < 0.1
               bottom_face.reverse!
             end
-            House.entities.add_face column.get['points'][0],column.get['points'][4],column.get['points'][5],column.get['points'][1]
-            House.entities.add_face column.get['points'][4],column.get['points'][5],column.get['points'][6],column.get['points'][7]
-            House.entities.add_face column.get['points'][1],column.get['points'][2],column.get['points'][6],column.get['points'][5]
-            House.entities.add_face column.get['points'][2],column.get['points'][3],column.get['points'][7],column.get['points'][6]
-            House.entities.add_face column.get['points'][0],column.get['points'][3],column.get['points'][7],column.get['points'][4]
+            colface1 = House.entities.add_face column.get['points'][0],column.get['points'][4],column.get['points'][5],column.get['points'][1]
+            colface2 = House.entities.add_face column.get['points'][4],column.get['points'][5],column.get['points'][6],column.get['points'][7]
+            colface3 = House.entities.add_face column.get['points'][1],column.get['points'][2],column.get['points'][6],column.get['points'][5]
+            colface4 = House.entities.add_face column.get['points'][2],column.get['points'][3],column.get['points'][7],column.get['points'][6]
+            colface5 = House.entities.add_face column.get['points'][0],column.get['points'][3],column.get['points'][7],column.get['points'][4]
+            column_material = materials["column_material"]
+            colface1.material = column_material
+            colface2.material = column_material
+            colface3.material = column_material
+            colface4.material = column_material
+            colface5.material = column_material
+            bottom_face.material = column_material
             column_group = House.entities.add_group bottom_face.all_connected
             column_group.set_attribute "house_mobject","type","column"
             column_group.set_attribute "house_mobject","id",object.get["id"]
@@ -872,11 +890,18 @@ module BFJO
             if bottom_face.normal.angle_between(base_vec) < 0.1
               bottom_face.reverse!
             end
-            House.entities.add_face p1,p4,p8,p5
-            House.entities.add_face p4,p3,p7,p8
-            House.entities.add_face p3,p2,p6,p7
-            House.entities.add_face p1,p2,p3,p4
-            House.entities.add_face p5,p6,p7,p8
+            griface1 = House.entities.add_face p1,p4,p8,p5
+            griface2 = House.entities.add_face p4,p3,p7,p8
+            griface3 = House.entities.add_face p3,p2,p6,p7
+            griface4 = House.entities.add_face p1,p2,p3,p4
+            griface5 = House.entities.add_face p5,p6,p7,p8
+            girder_material = materials["girder_material"]
+            griface1.material = girder_material
+            griface2.material = girder_material
+            griface3.material = girder_material
+            griface4.material = girder_material
+            griface5.material = girder_material
+            bottom_face.material = girder_material
             girder_group = House.entities.add_group bottom_face.all_connected
             girder_group.set_attribute "house_mobject","type","girder"
             girder_group.set_attribute "house_mobject","id",object.get["id"]
@@ -1132,9 +1157,14 @@ module BFJO
           # begin
             House.model.start_operation('石膏线', true)
             walls = House.room.get["mobjects"]["BFJO::House::Wall"]
-            layer_name = House.room.get["id"] + object.get["id"]
-            layers.add(layer_name)
+            # layer_name = House.room.get["id"] + object.get["id"]
+            # layers.add(layer_name)
+            # layer = layers[layer_name]
+            layer_name =object.get["id"]
             layer = layers[layer_name]
+            if layer==nil
+              layer=layers.add(layer_name)
+            end
             House.model.active_layer = layer
             woutter_points = []
             winner_points = []
@@ -1472,10 +1502,20 @@ module BFJO
 
             outter_top_face = House.entities.add_face outter_points
             outter_bottom_face = House.entities.add_face outter_bottom_points
+
+             ceilingline_material = materials["ceilingline_material"]
+             outter_top_face.material = ceilingline_material
+             outter_bottom_face.material = ceilingline_material
+
             group1 = House.entities.add_group outter_top_face.all_connected
 
             inner_top_face = House.entities.add_face calculated_inner_points
             inner_bottom_face = House.entities.add_face inner_bottom_points
+
+             inner_top_face.material = ceilingline_material
+             inner_bottom_face.material = ceilingline_material
+
+
             group2 = House.entities.add_group inner_top_face.all_connected
 
             ceilingline_group = group2.subtract(group1)
@@ -2274,8 +2314,8 @@ module BFJO
             face1 .reverse!
           end
           face1.pushpull height
-          wall_material1 = materials["material1"]
-          wall_material2 = materials["material2"]
+          wall_material1 = materials["innerwall_material"]
+          wall_material2 = materials["outterwall_material"]
           entity1 = face1.all_connected
           iface = ""
           entity1.each{ |e|
@@ -2361,8 +2401,8 @@ module BFJO
             face.reverse!
           end
           # puts door_vector.angle_between(wall_vector)
-          wall_material1 = materials["material1"]
-          wall_material2 = materials["material2"]
+          wall_material1 = materials["innerwall_material"]
+          wall_material2 = materials["outterwall_material"]
           face.pushpull thickness
           dg = face.all_connected
           dg.each{ |e|
