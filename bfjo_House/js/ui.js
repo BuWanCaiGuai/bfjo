@@ -51,6 +51,22 @@ $(document).ready(
 	} //function
 )
 
+layui.use('colorpicker', function(){
+  var colorpicker = layui.colorpicker;
+  //渲染
+  colorpicker.render({
+    elem: '#test1'  //绑定元素
+  });
+});
+
+layui.use('slider', function(){
+  var slider = layui.slider;
+  
+  //渲染
+  slider.render({
+    elem: '#slideTest1'  //绑定元素
+  });
+});
 
 function show_room_tag_edit() {
 	$("#add_room_tag_btn").hide()
@@ -392,6 +408,9 @@ function submit_save() {
 			break
 		case '2':
 			save_type = 'datafile'
+			break
+		case '3':
+			save_type = 'swj'
 			break
 		default:
 			break
@@ -1157,35 +1176,6 @@ function delete_room_type(obj) {
 	}, function() {});
 }
 
-// var room_type_array = []
-// function delete_room_type(obj) {
-// 	layer.confirm('您确定要删除？', {
-// 		btn: ['确定', '取消'] //按钮
-// 	}, function() {
-// 		var index = $(obj).parents("td").parents("tr").index()
-// 		//要删除的房间类型
-// 		var deleting_room_type = $("#room_table tr:eq(" + (index+1) + ") td:eq(0)").html()
-// 		//从默认房间数组中删除
-// 		removeByValue(room_type_array,deleting_room_type)
-// 		var params = []
-// 		//更新房间类型文件
-// 		params[0] = "update_room_tag_file"
-// 		params[1] = room_type_array
-// 		callback(params)
-// 		var is_deleted = getCanClick(1)
-// 		if(is_deleted){
-// 			$(obj).parents("tr").remove()
-// 			set_select_room_tag(room_type_array)
-// 			showMessage('删除成功！')
-// 		}else{
-// 			//删除失败，还原原来的房间类型数组
-// 			room_type_array.push(deleting_room_type)
-// 			warning('删除失败！')
-// 		}
-// 		layer.closeAll('dialog');
-// 	}, function() {});
-// }
-
 function delete_door_type(obj) {
 	layer.confirm('您确定要删除？', {
 		btn: ['确定', '取消'] //按钮
@@ -1296,20 +1286,6 @@ function submit_new_door_tag() {
 		$("#edit_door_tag_div").hide()
 		$("#add_door_tag_btn").show()
 	}
-}
-
-function setwallcolor(){
-	var wall_color = [
-		"m00_material",
-		$("#wall_r").val(),
-		$("#wall_g").val(),
-		$("#wall_b").val(),
-	]
-	// var params = []
-	// params[0] = "update_color"
-	// params[1] = wall_color
-	// callback(params)
-	// showMessage("墙颜色设置成功！")
 }
 
 function setplanecolor(){
@@ -1496,8 +1472,6 @@ layui.use(['form', 'table', 'element'], function() {
 	})
 
 })
-
-
 
 var rooms = []
 //分类二级按钮组

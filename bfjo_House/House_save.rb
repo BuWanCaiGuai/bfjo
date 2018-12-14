@@ -1,3 +1,4 @@
+require "rexml/document"
 module BFJO
   module House
     #保存打扮家方案
@@ -59,12 +60,14 @@ module BFJO
         skp_save_path = "#{save_path}\/skp"
         dbj_save_path = "#{save_path}\/打扮家"
         my_data_file_save_path = "#{save_path}\/datafile"
+        swj_save_path = "#{save_path}\/三维家"
         if !(File.directory? save_path)           
           begin
             Dir.mkdir(save_path)
             Dir.mkdir(skp_save_path)
             Dir.mkdir(dbj_save_path)
             Dir.mkdir(my_data_file_save_path)
+            Dir.mkdir(swj_save_path)
           rescue Exception => e
             UI.messagebox('请关闭打开的测量数据文件夹或测量数据后再重试！')
             return
@@ -85,7 +88,16 @@ module BFJO
         file_name = house_attribute+'_'+"#{date}"
         is_save_success = 0
 
-        if type == "dbj"
+        if type == "swj"
+          s = file_name + ".xml"
+          filename = UI.savepanel("保存三维家xml文件", "#{swj_save_path}", "#{s}")
+          if filename != nil
+            is_save_success = 1
+            self.swj_save(filename)
+            House.Web.execute_script("hide_message()")
+          end
+
+        elsif type == "dbj"
           s = file_name + ".json"
           filename = UI.savepanel("保存打扮家json文件", "#{dbj_save_path}", "#{s}")
           if filename != nil
@@ -202,6 +214,369 @@ module BFJO
         message = "'保存测量数据成功！'"
         House.Web.execute_script("showMessage("+"#{message}"+")")
       end
+    end
+
+    def self.swj_save(filepath)
+      if filepath != nil
+        xml_path_name = filepath
+        xml_file = File.new(xml_path_name,"w")       
+        xml=self.to_swj_xml
+        json=xml.to_s
+        # uuid = UUID.new
+        # puts uuid.generate
+        puts json
+        xml_file.puts(json)
+        xml_file.close
+        return true
+      else
+        return false
+      end
+    end
+
+
+    def self.to_swj_xml
+      house_json = {}
+      
+      texts = House.house.get["house_name"]
+      name_text = texts[0]+"小区"+texts[1]+"门栋"+texts[2]+"房"
+      house_json["name"] = name_text
+      doc = REXML::Document.new "<root/>"
+      root_node = doc.root
+      House.house.get["rooms"].each{ |roomname,room|
+        walls = room.get["mobjects"]["BFJO::House::Wall"]
+        columns = room.get["mobjects"]["BFJO::House::Column"]
+        girders = room.get["mobjects"]["BFJO::House::Girder"]
+        electricities = room.get["mobjects"]["BFJO::House::Electricity"]
+        skirtingline = room.get["mobjects"]["BFJO::House::Skirtingline"]
+        tripoint_pipes = room.get["mobjects"]["BFJO::House::Tripoint_pipe"]
+        water_pipes = room.get["mobjects"]["BFJO::House::Water_pipe"]
+        windows = room.get["mobjects"]["BFJO::House::Window"]
+        doors = room.get["mobjects"]["BFJO::House::Door"]
+        ceilingline = room.get["mobjects"]["BFJO::House::Ceilingline"]
+        steps = room.get["mobjects"]["BFJO::House::Steps"]
+        suspended_ceilings = room.get["mobjects"]["BFJO::House::Suspended_ceiling"]
+
+
+        if walls != []
+          wallInfo = root_node.add_element "WallInfo" , {"Version"=>"2_2"} 
+          ii=1
+          walls.each{ |wall|
+            wall_id = wall.get["id"].reverse.to_i #获得墙的id作为point_hash的key
+            wallData = REXML::Element.new "WallData" 
+            wallData.attributes["StartX"] = " " 
+            wallData.attributes["StartY"] = " "
+            wallData.attributes["EndX"] = " "
+            wallData.attributes["EndY"] = " "
+            wallData.attributes["Thickness"] = "#{wall.get["thickness"].to_mm}"
+            wallData.attributes["Height"] = "#{room.get["height"]}"
+            wallData.attributes["IsBear"] = " "
+            wallData.attributes["wallUID"] = "#{wall_id}"
+            wallInfo<<wallData
+          }
+        end
+
+        if doors != [] && doors != nil
+          inWallInfo = root_node.add_element "inWallInfo", {"Version"=>"2_2"}
+          doors.each{ |door|
+            inWallData = REXML::Element.new "InWallData"
+            inWallData.attributes["PosX"] = " "
+            inWallData.attributes["PosY"] = " "
+            inWallData.attributes["HighFloor"] = " "
+            inWallData.attributes["Length"] = " "
+            inWallData.attributes["Width"] = " "
+            inWallData.attributes["Height"] = " "
+            inWallData.attributes["RotateZ"] = " "
+            inWallData.attributes["Mirror"] = " "
+            inWallData.attributes["WallID"] = " "
+            inWallData.attributes["MaterialID"] = " "
+            inWallData.attributes["ProductCode"] = " "
+            inWallData.attributes["Type"] = " "
+            inWallInfo<<inWallData
+          }
+        end
+
+
+        if columns != [] && columns != nil
+          cuboidInfo = root_node.add_element "cuboidInfo", {"Version"=>"2_1"}
+          columns.each{ |column|
+            column_id = column.get["id"]
+            column_type = column.get["type"]
+            column.get["points"].each{ |point|  
+              posx = point.x.to_mm
+              posy = point.y.to_mm
+              posz = point.z.to_mm
+            }
+          cuboidData = REXML::Element.new "cuboidData"
+          cuboidData.attributes["Type"] = "#{column_type}"
+          cuboidData.attributes["PosX"] = ""
+          cuboidData.attributes["PosY"] = ""
+          cuboidData.attributes["PosZ"] = ""
+          cuboidData.attributes["Length"] = " "
+          cuboidData.attributes["Width"] = " "
+          cuboidData.attributes["Height"] = " "
+          cuboidData.attributes["RotateX"] = " "
+          cuboidData.attributes["RotateY"] = " "
+          cuboidData.attributes["RotateZ"] = " "
+          cuboidData.attributes["RoomID"] = " "
+          cuboidData.attributes["cuboidId"] = "#{column_id}"
+          cuboidInfo<<cuboidData
+          }
+        end
+
+      if girders != [] && girders != nil
+          girders.each{ |girder|
+            girder_id = girder.get["id"]
+            girder_type = girder.get["type"]
+            cuboidData = REXML::Element.new "cuboidData"
+            cuboidData.attributes["Type"] = "#{girder_type}"
+            cuboidData.attributes["PosX"] = ""
+            cuboidData.attributes["PosY"] = ""
+            cuboidData.attributes["PosZ"] = ""
+            cuboidData.attributes["Length"] = " "
+            cuboidData.attributes["Width"] = " "
+            cuboidData.attributes["Height"] = " "
+            cuboidData.attributes["RotateX"] = " "
+            cuboidData.attributes["RotateY"] = " "
+            cuboidData.attributes["RotateZ"] = " "
+            cuboidData.attributes["RoomID"] = " "
+            cuboidData.attributes["cuboidId"] = "#{girder_id}"
+            cuboidInfo<<cuboidData
+            }
+      end
+
+      if skirtingline != [] && skirtingline != nil
+          roomInfo = root_node.add_element "RoomInfo" , {"Version"=>"2_1"}
+          roomData = REXML::Element.new "roomData"
+          roomData.attributes["RoomName"] = " "
+          roomData.attributes["RoomSize"] = " "
+          roomData.attributes["RoomInfoX"] = " "
+          roomData.attributes["RoomInfoY"] = " "
+          roomData.attributes["RoomCategoryId"] = " "
+          roomData.attributes["Style"] = " "
+          roomData.attributes["RoomShape"] = " "
+          roomData.attributes["UID"] = " "
+          roomData.attributes["PosX"] = " "
+          roomData.attributes["PosY"] = " "
+          roomData.attributes["RoomId"] = "#{room.get["id"]}"
+          roomInfo<<roomData
+          skirtingline_id = skirtingline[0].get["id"]
+          skirtingline_height = skirtingline[0].get["height"].to_mm
+          skirtingline_depth = skirtingline[0].get["depth"].to_mm
+          ceilLineData = REXML::Element.new "ceilLineData"
+          ceilLineData.attributes["Witdh"] = "#{skirtingline_depth}"
+          ceilLineData.attributes["Height"] = "#{skirtingline_height}"
+          ceilLineData.attributes["isUpdate"] = " "
+          ceilLineData.attributes["isRotate"] = " "
+          ceilLineData.attributes["TextureMaterialId"] = " "
+          ceilLineData.attributes["TexturePicWidth"] = " "
+          ceilLineData.attributes["TexturePicHeight"] = " "
+          ceilLineData.attributes["TextureImagePath"] = " "
+          ceilLineData.attributes["StyleMaterialId"] = " "
+          ceilLineData.attributes["StyleImagePath"] = " "
+        end
+    }#house.each
+
+      # wallInfo = root_node.add_element "WallInfo" , {"Version"=>"2_2"} 
+      # wallData1 = REXML::Element.new "WallData" 
+      # wallData1.attributes["StartX"] = "#{name_text}" 
+      # wallData1.attributes["StartY"] = " "
+      # wallData1.attributes["EndX"] = " "
+      # wallData1.attributes["EndY"] = " "
+      # wallData1.attributes["Thickness"] = " "
+      # wallData1.attributes["Height"] = " "
+      # wallData1.attributes["IsBear"] = " "
+      # wallData1.attributes["wallUID"] = " "
+      # wallInfo<<wallData1
+      # roomInfo = root_node.add_element "RoomInfo" , {"Version"=>"2_1"}
+      # roomData = REXML::Element.new "roomData"
+      # roomData.attributes["RoomName"] = " "
+      # roomData.attributes["RoomSize"] = " "
+      # roomData.attributes["RoomInfoX"] = " "
+      # roomData.attributes["RoomInfoY"] = " "
+      # roomData.attributes["RoomCategoryId"] = " "
+      # roomData.attributes["Style"] = " "
+      # roomData.attributes["RoomShape"] = " "
+      # roomData.attributes["UID"] = " "
+      # roomData.attributes["PosX"] = " "
+      # roomData.attributes["PosY"] = " "
+      # roomData.attributes["RoomId"] = " "
+      # roomInfo<<roomData
+      # ceilLineData = REXML::Element.new "ceilLineData"
+      # ceilLineData.attributes["Witdh"] = " "
+      # ceilLineData.attributes["Height"] = " "
+      # ceilLineData.attributes["isUpdate"] = " "
+      # ceilLineData.attributes["isRotate"] = " "
+      # ceilLineData.attributes["TextureMaterialId"] = " "
+      # ceilLineData.attributes["TexturePicWidth"] = " "
+      # ceilLineData.attributes["TexturePicHeight"] = " "
+      # ceilLineData.attributes["TextureImagePath"] = " "
+      # ceilLineData.attributes["StyleMaterialId"] = " "
+      # ceilLineData.attributes["StyleImagePath"] = " "
+
+
+      # roomData<<ceilLineData
+      # ceil_topLine = REXML::Element.new "TopLine"
+      # ceilLineData<<ceil_topLine
+      # ct_path = REXML::Element.new "Path"
+      # ct_path.attributes["value"] = " "
+      # ct_startToEnd = REXML::Element.new "StartToEnd"
+      # ct_startToEnd.attributes["value"] = " "
+      # ct_rotation = REXML::Element.new "Rotation"
+      # ct_rotation.attributes["value"] = " "
+      # ceil_topLine<<ct_path
+      # ceil_topLine<<ct_startToEnd
+      # ceil_topLine<<ct_rotation
+
+      # footLineData = REXML::Element.new "footLineData"
+      # footLineData.attributes["Witdh"] = " "
+      # footLineData.attributes["Height"] = " "
+      # footLineData.attributes["isUpdate"] = " "
+      # footLineData.attributes["isRotate"] = " "
+      # footLineData.attributes["TextureMaterialId"] = " "
+      # footLineData.attributes["TexturePicWidth"] = " "
+      # footLineData.attributes["TexturePicHeight"] = " "
+      # footLineData.attributes["TextureImagePath"] = " "
+      # footLineData.attributes["StyleMaterialId"] = " "
+      # footLineData.attributes["StyleImagePath"] = " "
+      # roomData<<footLineData
+      # foot_topLine = REXML::Element.new "TopLine"
+      # footLineData<<foot_topLine
+      # ft_path = REXML::Element.new "Path"
+      # ft_path.attributes["value"] = " "
+      # ft_startToEnd = REXML::Element.new "StartToEnd"
+      # ft_startToEnd.attributes["value"] = " "
+      # ft_rotation = REXML::Element.new "Rotation"
+      # ft_rotation.attributes["value"] = " "
+      # foot_topLine<<ft_path
+      # foot_topLine<<ft_startToEnd
+      # foot_topLine<<ft_rotation
+
+      # cuboidInfo = root_node.add_element "cuboidInfo", {"Version"=>"2_1"}
+      # cuboidData1 = REXML::Element.new "cuboidData"
+      # cuboidData1.attributes["Type"] = "pillarType"
+      # cuboidData1.attributes["PosX"] = " "
+      # cuboidData1.attributes["PosY"] = " "
+      # cuboidData1.attributes["PosZ"] = " "
+      # cuboidData1.attributes["Length"] = " "
+      # cuboidData1.attributes["Width"] = " "
+      # cuboidData1.attributes["Height"] = " "
+      # cuboidData1.attributes["RotateX"] = " "
+      # cuboidData1.attributes["RotateY"] = " "
+      # cuboidData1.attributes["RotateZ"] = " "
+      # cuboidData1.attributes["RoomID"] = " "
+      # cuboidData1.attributes["cuboidId"] = " "
+
+      # cuboidData2 = REXML::Element.new "cuboidData"
+      # cuboidData2.attributes["Type"] = "beamType"
+      # cuboidData2.attributes["PosX"] = " "
+      # cuboidData2.attributes["PosY"] = " "
+      # cuboidData2.attributes["PosZ"] = " "
+      # cuboidData2.attributes["Length"] = " "
+      # cuboidData2.attributes["Width"] = " "
+      # cuboidData2.attributes["Height"] = " "
+      # cuboidData2.attributes["RotateX"] = " "
+      # cuboidData2.attributes["RotateY"] = " "
+      # cuboidData2.attributes["RotateZ"] = " "
+      # cuboidData2.attributes["RoomID"] = " "
+      # cuboidData2.attributes["cuboidId"] = " "
+
+      # cuboidInfo<<cuboidData1
+      # cuboidInfo<<cuboidData2
+
+      # areaNodeData1 = REXML::Element.new "AreaNodeData"
+      # areaNodeData1.attributes["MaterialID"] = " "
+      # areaNodeData1.attributes["UVRota"] = " "
+      # areaNodeData1.attributes["UVx"] = " "
+      # areaNodeData1.attributes["UVy"] = " "
+      # areaNodeData1.attributes["UVScalX"] = " "
+      # areaNodeData1.attributes["UVScalY"] = " "
+      # areaNodeData1.attributes["PicTex"] = " "
+      # areaNodeData1.attributes["PicWidth"] = " "
+      # areaNodeData1.attributes["PicHeight"] = " "
+      # areaNodeData1.attributes["CategoryID"] = " "
+      # areaNodeData1.attributes["MaterialColor"] = " "
+      # areaNodeData1.attributes["MaterialType"] = " "
+      # areaNodeData1.attributes["AreaNodeID"] = " "
+      # cuboidData1<<areaNodeData1
+      # cuboidData2<<areaNodeData7
+      # cuboidData2<<areaNodeData8
+      # cuboidData2<<areaNodeData9
+      # cuboidData2<<areaNodeData10
+      # cuboidData2<<areaNodeData11
+      # cuboidData2<<areaNodeData12
+      # inWallInfo = root_node.add_element "inWallInfo", {"Version"=>"2_2"}
+      # inWallData1 = REXML::Element.new "InWallData"
+      # inWallData1.attributes["PosX"] = " "
+      # inWallData1.attributes["PosY"] = " "
+      # inWallData1.attributes["HighFloor"] = " "
+      # inWallData1.attributes["Length"] = " "
+      # inWallData1.attributes["Width"] = " "
+      # inWallData1.attributes["Height"] = " "
+      # inWallData1.attributes["RotateZ"] = " "
+      # inWallData1.attributes["Mirror"] = " "
+      # inWallData1.attributes["WallID"] = " "
+      # inWallData1.attributes["MaterialID"] = " "
+      # inWallData1.attributes["ProductCode"] = " "
+      # inWallData1.attributes["Type"] = " "
+      # inWallData2 = REXML::Element.new "InWallData"
+      # inWallData3 = REXML::Element.new "InWallData"
+      # inWallData4 = REXML::Element.new "InWallData"
+      # inWallData5 = REXML::Element.new "InWallData"
+      # inWallData6 = REXML::Element.new "InWallData"
+      # inWallData7 = REXML::Element.new "InWallData"
+      # inWallData8 = REXML::Element.new "InWallData"
+      # inWallData9 = REXML::Element.new "InWallData"
+      # inWallInfo<<inWallData1
+      # inWallInfo<<inWallData2
+      # inWallInfo<<inWallData3
+      # inWallInfo<<inWallData4
+      # inWallInfo<<inWallData5
+      # inWallInfo<<inWallData6
+      # inWallInfo<<inWallData7
+      # inWallInfo<<inWallData8
+      # inWallInfo<<inWallData9
+      # furnitureInfo = root_node.add_element "furnitureInfo", {"Version"=>"2_1"}
+      # furnitureData1 = REXML::Element.new "FurnitureData"
+      # furnitureData1.attributes["PosX"] = " "
+      # furnitureData1.attributes["PosY"] = " "
+      # furnitureData1.attributes["PosZ"] = " "
+      # furnitureData1.attributes["Length"] = " "
+      # furnitureData1.attributes["Width"] = " "
+      # furnitureData1.attributes["Height"] = " "
+      # furnitureData1.attributes["RotateX"] = " "
+      # furnitureData1.attributes["RotateY"] = " "
+      # furnitureData1.attributes["RotateZ"] = " "
+      # furnitureData1.attributes["MaterialID"] = " "
+      # furnitureData1.attributes["ProductCode"] = " "
+      # furnitureData1.attributes["WallID"] = " "
+      # furnitureData1.attributes["RoomID"] = " "
+      # furnitureData1.attributes["Type"] = " "
+      # furnitureData1.attributes["uid"] = " "
+
+      # furnitureData2 = REXML::Element.new "FurnitureData"
+      # furnitureData3 = REXML::Element.new "FurnitureData"
+      # furnitureData4 = REXML::Element.new "FurnitureData"
+      # furnitureData5 = REXML::Element.new "FurnitureData"
+      # furnitureData6 = REXML::Element.new "FurnitureData"
+      # furnitureData7 = REXML::Element.new "FurnitureData"
+      # furnitureData8 = REXML::Element.new "FurnitureData"
+      # furnitureData9 = REXML::Element.new "FurnitureData"
+      # furnitureData10 = REXML::Element.new "FurnitureData"
+      # furnitureData11 = REXML::Element.new "FurnitureData"
+      # furnitureData12 = REXML::Element.new "FurnitureData"
+      # furnitureInfo<<furnitureData1
+      # furnitureInfo<<furnitureData2
+      # furnitureInfo<<furnitureData3
+      # furnitureInfo<<furnitureData4
+      # furnitureInfo<<furnitureData5
+      # furnitureInfo<<furnitureData6
+      # furnitureInfo<<furnitureData7
+      # furnitureInfo<<furnitureData8
+      # furnitureInfo<<furnitureData9
+      # furnitureInfo<<furnitureData10
+      # furnitureInfo<<furnitureData11
+      # furnitureInfo<<furnitureData12
+      return doc
     end
 
     def self.dbj_save(filepath)
@@ -623,6 +998,8 @@ module BFJO
         end
         rooms.push(room_json)
       }
+
+
       house_json["rooms"] = rooms
       return JSON.generate(house_json)
       # }

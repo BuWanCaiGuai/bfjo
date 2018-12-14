@@ -99,6 +99,9 @@
                                 <button class="layui-btn layui-btn-primary" id="wall_thickness_OkBtn" onclick="setWallthickness()">应用
                                 </button>
             </div>
+             <div> 颜色选择器<div id="test1"></div></div>
+            
+             <div> 滑块<div id="slideTest1"></div></div>
     </div>
 
     <div class="layui-tab-item">
@@ -159,14 +162,15 @@
             <button class="layui-btn layui-btn-primary" style="margin-left: 10px" onclick="setceilinglinecolor()">应用</button>
         </div>
 
-        <div>
+        <!-- <div>
             <label style="float: left;margin-top: 8px;margin-left: 20px">踢脚线颜色设置</label>
             <input id=skirtingline_r type="text" class="layui-input" style="width: 40px;float: left;margin-left: 18px" placeholder="R">
             <input id=skirtingline_g type="text" class="layui-input" style="width: 40px;float: left;" placeholder="G">
             <input id=skirtingline_b type="text" class="layui-input" style="width: 40px;float: left;" placeholder="B">
             <button class="layui-btn layui-btn-primary" style="margin-left: 10px" onclick="setskirtinglinecolor()">应用</button>
-        </div>
-
+        </div> -->
+       
+       
     </div>
     
   </div>
@@ -237,6 +241,7 @@
                 <label style="width: 100px;margin-top:-100px;margin-left:15px;line-height: 50px; ">保存类型</label>
                 <div style="width: 160px;margin-top:-40px;margin-left:80px; ">
                     <select name="functional_area" lay-filter="file_area" id="select_save_type">
+                        <option value="3">三维家户型.xml</option>
                         <option value="2">测量文件.mjson</option>
                         <option value="1">草图大师文件.skp</option>
                         <option value="0">打扮家方案</option>
